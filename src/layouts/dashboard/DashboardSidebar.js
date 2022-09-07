@@ -14,6 +14,8 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
 import navConfig from './NavConfig';
+import { useContext } from 'react';
+import { User } from 'src/Contexts/UserContext';
 
 // ----------------------------------------------------------------------
 
@@ -43,7 +45,8 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-
+  const {user} = useContext(User)
+  console.log(user.displayName)
   const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {

@@ -4,13 +4,13 @@ import 'simplebar/src/simplebar.css';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import {FirebaseInit} from './Contexts/firebase-config'
-import { FirebaseContext } from './Contexts/Firebase';
 // import {useContext} from 'react'
 //
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
+import RootFirebase from './Contexts/FirebaseContext';
+import UserContext from './Contexts/UserContext';
 
 
 
@@ -19,13 +19,15 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-  <FirebaseContext.Provider value={{FirebaseInit}} >
-    <HelmetProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </HelmetProvider>
-  </FirebaseContext.Provider>
+  <RootFirebase>
+    <UserContext>
+      <HelmetProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </HelmetProvider>
+    </UserContext>
+  </RootFirebase>
 );
 
 // If you want to enable client cache, register instead.
