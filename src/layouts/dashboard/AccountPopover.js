@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useContext, useRef, useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@mui/material';
@@ -7,6 +7,9 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
 import account from '../../_mock/account';
+import { User } from 'src/Contexts/UserContext';
+import { signOut } from 'firebase/auth';
+import { auth } from 'src/Contexts/firebaseConfig';
 
 // ----------------------------------------------------------------------
 
@@ -32,8 +35,9 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
-
+  const {user} = useContext(User)
   const [open, setOpen] = useState(null);
+  const navigate = useNavigate();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -42,6 +46,19 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(null);
   };
+
+  const redirectLogin = () => {
+    navigate('/login')
+  }
+
+  const handleLogout = ()=>{
+    try {
+      signOut(auth).then(()=>{console.log('logout complete')}).catch((err)=>{console.log(err);})
+    } catch (error) {
+      alert('task failed')
+      console.log(error);
+    } 
+  }
 
   return (
     <>
@@ -82,10 +99,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user ? user.displayName : 'LogIn' }
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user ? user.email : 'to Continue'}
           </Typography>
         </Box>
 
@@ -101,9 +118,13 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        {user ? <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
+        </MenuItem> :
+          <MenuItem onClick={redirectLogin} sx={{ m: 1 }}>
+          Login
         </MenuItem>
+        }
       </MenuPopover>
     </>
   );

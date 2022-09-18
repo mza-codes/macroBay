@@ -1,3 +1,7 @@
 .errorText{
     color:red;
 }
+
+.pointer{
+    cursor: pointer;
+}

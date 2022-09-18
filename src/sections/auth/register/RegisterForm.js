@@ -49,8 +49,6 @@ export default function RegisterForm() {
 
   const onSubmit = async (props) => {
     console.log(props)
-    // doc()
-
     createUserWithEmailAndPassword(auth, props.email, props.password).then((result) => {
       console.log('logging result');
       console.log(result.user)

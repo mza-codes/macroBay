@@ -8,20 +8,22 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Link, Stack, IconButton, InputAdornment } from '@mui/material';
+import { Link, Stack, IconButton, InputAdornment, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
 import { auth } from 'src/Contexts/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
-    //   const navigate = useNavigate();
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [errorMessage,setErrorMsg] = useState('')
     const {firebase} = useContext(FirebaseContext)
     const LoginSchema = Yup.object().shape({
         email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -45,12 +47,11 @@ export default function LoginForm() {
     } = methods;
 
     const onSubmit = async (props) => {
-        
         signInWithEmailAndPassword(auth,props.email, props.password).then((result) => {
-            // setUser(result.user)
             console.log(result)
-          }).catch((err) => { alert(err.message) })
-        window.alert('onsubmit called')
+            navigate('/')
+          }).catch((err) => { setErrorMsg(err.code) })
+        
     };
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}  >
@@ -73,6 +74,7 @@ export default function LoginForm() {
                         ),
                     }}
                 />
+                <Typography className='errorText'>{errorMessage}</Typography>
             </Stack>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
@@ -81,7 +83,6 @@ export default function LoginForm() {
                     Forgot password?
                 </Link>
             </Stack>
-
             <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
                 Login
             </LoadingButton>

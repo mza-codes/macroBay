@@ -6,6 +6,7 @@ export const User = createContext(null)
 
 function UserContext({children}) {
     const [user,setUser] = useState(null)
+    // user.displayName = 'Lofter GH'
   return (
     <User.Provider value={{user,setUser}} >
         {children}

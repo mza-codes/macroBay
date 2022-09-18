@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -8,6 +8,9 @@ import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/Label';
 import { ColorPreview } from '../../../components/color-utils';
+import ProductView from './ProductView';
+import { SingleProduct } from 'src/Contexts/ProductContext';
+import { useContext } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -26,15 +29,25 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
-
+  // console.log(product);
+  // const { name, cover, price, colors, status, priceSale } = product;
+  const {setSingleItem} = useContext(SingleProduct)
+  const {name, category, postDate, price, url} = product
+  const route = useNavigate()
+  // let status =  //'-10%'  
+  let priceSale = price*2-14
+  let status = '-'+10+'%'
+  function renderProduct(){
+    setSingleItem(product)
+    route('/dashboard/viewproduct')
+  }
   return (
-    <Card>
+    <Card className='pointer' onClick={renderProduct}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
         {status && (
           <Label
             variant="filled"
-            color={(status === 'sale' && 'error') || 'info'}
+            color={(status === 'sale' && 'info') || 'error'}
             sx={{
               zIndex: 9,
               top: 16,
@@ -46,20 +59,22 @@ export default function ShopProductCard({ product }) {
             {status}
           </Label>
         )}
-        <ProductImgStyle alt={name} src={cover} />
+        <ProductImgStyle alt={name} src={url} />
       </Box>
 
-      <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
+      <Stack spacing={1} sx={{ p: 3 }}>
+        <Link to="/viewproduct" color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
             {name}
           </Typography>
         </Link>
-
+        <Typography variant="subtitle2" noWrap>
+            {category}
+          </Typography>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
+          {/* <ColorPreview colors={colors} /> */}
           <Typography variant="subtitle1">
-            <Typography
+            {/* <Typography
               component="span"
               variant="body1"
               sx={{
@@ -67,12 +82,26 @@ export default function ShopProductCard({ product }) {
                 textDecoration: 'line-through',
               }}
             >
-              {priceSale && fCurrency(priceSale)}
-            </Typography>
+              {price && fCurrency(priceSale)}
+            </Typography> */}
             &nbsp;
-            {fCurrency(price)}
+            {/* {fCurrency(price)} */}
+            ₹ {price}
           </Typography>
+          <Typography
+              component="span"
+              variant="body1"
+              sx={{
+                color: 'text.disabled',
+                textDecoration: 'line-through',
+              }}
+            >
+              {/* {price && fCurrency(priceSale)} */}
+              {price && `₹ ${priceSale}`}
+            </Typography>
         </Stack>
+        <span style={{fontSize:'0.7rem',paddingTop:'0.5rem'}}>{postDate.slice(0,10)}</span>
+        {/* <span style={{fontSize:'0.7rem',paddingTop:'0.5rem'}}>{postDate}</span> */}
       </Stack>
     </Card>
   );

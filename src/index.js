@@ -11,6 +11,7 @@ import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 import RootFirebase from './Contexts/FirebaseContext';
 import UserContext from './Contexts/UserContext';
+import ProductContext from './Contexts/ProductContext';
 
 
 
@@ -21,11 +22,13 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <RootFirebase>
     <UserContext>
-      <HelmetProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </HelmetProvider>
+      <ProductContext>
+        <HelmetProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </HelmetProvider>
+      </ProductContext>
     </UserContext>
   </RootFirebase>
 );

@@ -47,3 +47,30 @@ export default function Page404() {
     </Page>
   );
 }
+
+export function ErrorLogo() {
+  return (
+    // <Box component="img"
+    //   src="/static/illustrations/illustration_404.svg"
+    //   sx={{ height: 260, mx: 'auto', my: { xs: 5, sm: 10 } }}/>
+    <Box  sx={{ textAlign: 'center', alignItems: 'center' }}>
+      <Typography color='error' variant="h3" paragraph>
+        Sorry, Error 404 !
+      </Typography>
+
+      <Typography color='error' >
+        Sorry, we couldn’t find what you’re looking for. Perhaps you’ve mistyped the URL?
+      </Typography>
+
+      <Box
+        component="img"
+        src="/static/illustrations/illustration_404_Red.svg"
+        sx={{ height: 260, mx: 'auto', my: { xs: 5, sm: 10 } }}
+      />
+
+      <Button to="/" color='error' size="large" variant="contained" component={RouterLink}>
+        Go to Home
+      </Button>
+    </Box>
+  )
+}

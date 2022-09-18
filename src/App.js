@@ -22,7 +22,7 @@ export default function App() {
       console.log(user);
       setUser(user)
     })
-  })
+  },[])
   return (
     <ThemeProvider>
       <ScrollToTop />
