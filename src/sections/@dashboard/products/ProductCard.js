@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
-import { Box, Card, Link, Typography, Stack } from '@mui/material';
+import { Box, Card, Link, Typography, Stack, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/Label';
 import { ColorPreview } from '../../../components/color-utils';
-import ProductView from './ProductView';
+import ProductView from '../../../pages/ProductView';
 import { SingleProduct } from 'src/Contexts/ProductContext';
 import { useContext } from 'react';
 
@@ -36,7 +36,7 @@ export default function ShopProductCard({ product }) {
   const route = useNavigate()
   // let status =  //'-10%'  
   let priceSale = price*2-14
-  let status = '-'+10+'%'
+  let status = '-'+20+'%'
   function renderProduct(){
     setSingleItem(product)
     route('/dashboard/viewproduct')

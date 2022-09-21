@@ -2,6 +2,36 @@
     color:red;
 }
 
+.errorInput{
+    color:red !important;
+    font-size: x-small;
+    font-weight: 900;
+}
+
+.successInput{
+    color:rgb(0, 56, 30) !important;
+    font-size: x-small;
+    font-weight: 900;
+}
+
+.p{
+    padding:0.5rem;
+}
+
 .pointer{
     cursor: pointer;
 }
+
+.smallFont{
+    font-size: small;
+}
+
+.green{
+    color: green !important;
+    border-color: green !important;
+}
+
+.bold{
+    font-weight: 900;
+}
+

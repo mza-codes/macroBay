@@ -1,10 +1,12 @@
-import PropTypes from 'prop-types';
+
 // material
 import { Grid } from '@mui/material';
 import ShopProductCard from './ProductCard';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from 'src/Contexts/firebaseConfig';
+import { useContext } from 'react';
+import { ProductsRefresh } from 'src/pages/Products';
 
 // ----------------------------------------------------------------------// products,
 
@@ -13,28 +15,41 @@ import { db } from 'src/Contexts/firebaseConfig';
 // };
 
 export default function ProductList({ ...other }) {
-  // console.log(products);
-  // useEffect(()=>{
   const [products, setProducts] = useState([])
+  const {reload,setReload}= useContext(ProductsRefresh)
   async function fetchData() {
-    const items = await getDocs(collection(db, 'products'))
-    console.log('logging items FROM FIRESTORE');
-    // items.forEach((doc) => {
-    //   // doc.data() is never undefined for query doc snapshots
-    //   console.log(doc.id, " => ", doc.data());
-    // });
-    const allProducts = items.docs.map((product) => {
-      return {
-        ...product.data(),
-        id: product.id
-      }
-    })
-    console.log(allProducts);
-    setProducts(allProducts)
+    var storedArray = sessionStorage.getItem("localProducts");
+    if (storedArray == null) {
+      console.log('STORED ARRAY FOUND NULL FETCHING DATA FROM SERVER');
+      const data = await getDocs(collection(db, 'products'))
+      const localItems = data.docs.map((product) => {
+        return {
+          ...product.data(),
+          id: product.id
+        }
+      })
+      sessionStorage.setItem("localProducts", JSON.stringify(localItems));
+      const localData = sessionStorage.getItem("localProducts");
+      let localProducts = JSON.parse(localData);
+      console.log('DATA Fetched from Server,logging STORED ARRAY::: ', localProducts);
+      setProducts(localProducts)
+    } else {
+      let localProducts = JSON.parse(storedArray);
+      setProducts(localProducts)
+    }
+    setReload(false)
+    // sessionStorage.setItem("items", JSON.stringify(allProducts));
+    // setProducts(items)
+    // setProducts(localItems)
+    // console.log('logging localItems', localItems);
+    // }
   }
   useEffect(() => {
+    // var prod = sessionStorage.getItem('products')
+    // console.log('logging prod');
+    // console.log(prod);
     fetchData()
-  }, [])
+  }, [reload])
 
   // })
   return (

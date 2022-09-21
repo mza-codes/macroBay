@@ -32,6 +32,7 @@ const PRIMARY = {
   lighter: '#D1E9FC',
   light: '#76B0F1',
   main: '#2065D1',
+  // main: '#ef6c00',
   dark: '#103996',
   darker: '#061B64',
   contrastText: '#fff',
@@ -58,9 +59,18 @@ const INFO = {
 const SUCCESS = {
   lighter: '#E9FCD4',
   light: '#AAF27F',
-  main: '#54D62C',
+  main: '#08660D',
   dark: '#229A16',
   darker: '#08660D',
+  contrastText: GREY[800],
+};
+
+const FOGGY = {
+  lighter: '#f48fb1',
+  light: '#c2185b',
+  main: '#880e4f',
+  dark: '#ffee58',
+  darker: '#3e2723',
   contrastText: GREY[800],
 };
 
@@ -81,6 +91,15 @@ const ERROR = {
   darker: '#7A0C2E',
   contrastText: '#fff',
 };
+
+const DANGER = {
+  lighter: '#ff7961',
+  light: '#ff6659',
+  main: '#d50000',
+  dark: '#7f0000',
+  darker: '#9b0000',
+  contrastText: GREY[800],
+}
 
 const GRADIENTS = {
   primary: createGradient(PRIMARY.light, PRIMARY.main),
@@ -107,6 +126,8 @@ const palette = {
   warning: { ...WARNING },
   error: { ...ERROR },
   grey: GREY,
+  danger: { ...DANGER },
+  foggy: { ...FOGGY },
   gradients: GRADIENTS,
   chart: CHART_COLORS,
   divider: GREY[500_24],

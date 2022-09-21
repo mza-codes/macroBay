@@ -13,7 +13,7 @@ import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
-import navConfig from './NavConfig';
+import navConfig, { navConfig2 } from './NavConfig';
 import { useContext } from 'react';
 import { User } from 'src/Contexts/UserContext';
 
@@ -77,17 +77,17 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {user ? user.displayName : account.displayName}
+                {user ? user.displayName : 'Guest'}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {user ? userRole : account.role}
+                {user ? userRole : 'Customer'}
               </Typography>
             </Box>
           </AccountStyle>
         </Link>
       </Box>
 
-      <NavSection navConfig={navConfig} />
+      {user ? <NavSection navConfig={navConfig2} /> : <NavSection navConfig={navConfig} />}
 
       <Box sx={{ flexGrow: 1 }} />
 

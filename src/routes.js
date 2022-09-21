@@ -14,7 +14,8 @@ import UserError from './pages/UserError';
 import { useContext } from 'react';
 import { User } from './Contexts/UserContext';
 import { SingleProduct } from './Contexts/ProductContext';
-import ProductView from './sections/@dashboard/products/ProductView';
+import ProductView from './pages/ProductView';
+import CreatePost from './pages/CreatePost';
 
 // ----------------------------------------------------------------------
 
@@ -24,8 +25,10 @@ export default function Router() {
   let productRoute
   let loginRoute
   let signupRoute
+  let createPost
   user ? loginRoute = <UserError /> : loginRoute = <Login />
   user ? signupRoute = <UserError /> : signupRoute = <Register />
+  user ? createPost = <CreatePost /> : createPost = <Login />
   if (singleItem!=null){
     productRoute =  <ProductView />
   }else{
@@ -40,7 +43,8 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
-        { path: 'viewproduct', element: productRoute }
+        { path: 'viewproduct', element: productRoute },
+        { path: 'create', element: createPost }
       ],
     },
     {
