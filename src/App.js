@@ -18,8 +18,6 @@ export default function App() {
   const {user,setUser} = useContext(User)
   useEffect(()=>{
     onAuthStateChanged(auth,(user)=>{
-      console.log('logging user from app.js useEffect')
-      console.log(user);
       setUser(user)
     })
   },[])

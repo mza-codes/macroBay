@@ -21,7 +21,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { User } from 'src/Contexts/UserContext';
 
 // ----------------------------------------------------------------------
-export const selectValues = ['Electronics', 'Gadgets', 'Buildings','Land', 'Apartments', 'Bikes', 'Cars', 'Laptop', 'Cycles', 'Desktop', 'Other']
+export const selectValues = ['Electronics', 'Gadgets', 'Buildings', 'Land', 'Apartments', 'Bikes', 'Cars', 'Laptop', 'Cycles', 'Desktop', 'Other']
 export default function PostForm() {
     const navigate = useNavigate();
     const [success, setSuccess] = useState(false)
@@ -71,48 +71,16 @@ export default function PostForm() {
                 }).catch((err) => console.log(err))
             }).catch((err) => console.log(err))
         }).catch((err) => console.log(err))
-        
+
         setSuccess(true)
         setTimeout(() => {
             setSuccess(false);
-            // actions.setSubmitting(false)
         }, 5000);
         setTimeout(() => {
-            navigate('/')
+            sessionStorage.removeItem('localProducts');
+            navigate('/',{replace:true})
         }, 1000);
-        // getSuccessAlert()
-        // 
-        // addDoc(collection(db, 'webusers'), {
-        //     id: result.user.uid,
-        //     username: props.username,
-        //     email: props.email,
-        //     phone: props.phone
-        //   })
-        // .put(image).then((result) => {
-        //     result.ref.getDownloadURL().then((url) => {
-        //         console.log(url);
-        //         app.firestore().collection('products').add({
-        //             name,
-        //             category,
-        //             price,
-        //             url,
-        //             userId: 'user.uid',
-        //             postDate: new Date().toLocaleString()
-        //         }).catch((err) => console.log(err))
-        //         //   route.push('/')
-        //         alert('upload complete')
-        //     }).catch((err) => console.log(err))
-        // }).catch((err) => console.log(err))
-        // setTimeout(() => {
-        //     alert(JSON.stringify(values, null, 2));
-        //     actions.setSubmitting(false);
-        // }, 1000);
     }
-    // useEffect(() => {
-    //     setTimeout(function () {
-    //         setSuccess(false);
-    //     }, 5000);
-    // }, [])
 
     return (
         <div>

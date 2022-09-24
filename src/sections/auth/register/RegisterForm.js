@@ -44,7 +44,7 @@ export default function RegisterForm() {
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = methods;
 
   const onSubmit = async (props) => {
@@ -60,7 +60,7 @@ export default function RegisterForm() {
           email: props.email,
           phone: props.phone
         }).then(() => {
-          navigate('/dashboard', { replace: true });
+          navigate('/', { replace: true });
           // route.push('/')
           // alert('complete')
         }).catch((err) => { console.log(err); setErrorMsg(err.message) })
@@ -95,7 +95,7 @@ export default function RegisterForm() {
           }}
         />
         <Typography className='errorText'>{errorMessage}</Typography>
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+        <LoadingButton fullWidth size="large" type="submit" variant="contained" disabled={isValid} loading={isSubmitting}>
           Register
         </LoadingButton>
       </Stack>

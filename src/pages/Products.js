@@ -1,6 +1,6 @@
 import { useState } from 'react';
 // material
-import { Container, Stack, Typography } from '@mui/material';
+import { Alert, Container, Stack, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
@@ -13,6 +13,7 @@ export const ProductsRefresh = createContext(null)
 export default function EcommerceShop() {
   const [openFilter, setOpenFilter] = useState(false);
   const [reload, setReload] = useState(false)
+  const [alert,setAlert] = useState(false)
   const handleOpenFilter = () => {
     setOpenFilter(true);
   };
@@ -22,12 +23,13 @@ export default function EcommerceShop() {
   };
 
   return (
-    <Page title="Dashboard: Products">
+    <Page title="Sale">
       <Container>
-        <Typography variant="h4" sx={{ mb: 5 }}>
+        <Typography variant="h4" sx={{ mb: 2 }}>
           Products
         </Typography>
-        <ProductsRefresh.Provider value={{ reload, setReload }}>
+        {alert && <Alert variant='filled' severity='info' > Item Deleted Successfully! </Alert>}
+        <ProductsRefresh.Provider value={{ reload, setReload, alert, setAlert }}>
           <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
             <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
               <ProductFilterSidebar

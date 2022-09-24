@@ -137,7 +137,7 @@ export default function CreatePost() {
               </Link>
               .
             </Typography> */}
-            {image && <div > <h6>Uploaded image</h6>
+            {image && <div > <h6>{image.name}</h6>
             <img style={{marginTop:'0.3rem'}} src={image ? URL.createObjectURL(image) : ''}  />
             <img style={{marginTop:'0.3rem'}} src={image2 ? URL.createObjectURL(image2) : ''}  />
             </div>}
