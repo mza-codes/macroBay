@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton, Typography, Alert } from '@mui/material';
 // components
 import Iconify from '../../components/Iconify';
 //
@@ -9,6 +9,7 @@ import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
+import useResponsive from 'src/hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +42,7 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
+  const isDesktop = useResponsive('up', 'lg');
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -49,7 +51,28 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         </IconButton>
 
         <Searchbar />
+
+        {/* <div>
+          <Box alignContent='center' alignItems='center' textAlign='center' sx={{ color: 'darkgreen', mx: 'auto', display: 'flex', fontSize: 14 }}>
+            <h6 className="m-auto successInput">hi this field will be succes diplay</h6>
+          </Box>
+        </div> */}
+        {/* {!isDesktop && (
+          <div >
+            <Alert sx={{ml:1}} variant="filled" severity="success" color="success">
+              Action Success
+            </Alert>
+          </div>
+        )}
+        {isDesktop && (
+          <Alert sx={{ml:2}} variant="filled" severity="success" color="success">
+            Item Listed for Sale <strong>Successfully</strong>
+          </Alert>
+        )} */}
+
+
         <Box sx={{ flexGrow: 1 }} />
+
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           <LanguagePopover />

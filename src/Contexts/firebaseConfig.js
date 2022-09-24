@@ -1,8 +1,8 @@
 import {initializeApp} from 'firebase/app'
-import 'firebase/auth'
 import { FIREBASE_KEY } from 'src/Constants'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 const config = {
     apiKey: FIREBASE_KEY,
     authDomain: "microbay-mza.firebaseapp.com",
@@ -15,8 +15,10 @@ const config = {
 
 export default initializeApp(config)
 
-export const app = initializeApp(config)
+export const app = initializeApp(config) ;console.log('logging APP Firebase',app);
 
-export const auth = getAuth(app)
+export const storage = getStorage(app) ;console.log('logging storage',storage);
 
-export const db = getFirestore(app)
+export const auth = getAuth(app) ;console.log('logging auth MAIN',auth);
+
+export const db = getFirestore(app) ;console.log('logging db',db);

@@ -1,117 +1,32 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { addDoc, collection, doc, setDoc } from "firebase/firestore"
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Stack, Typography, MenuItem, InputLabel, Select, Button, FormHelperText, TextField, Input } from '@mui/material';
+import { Stack, Typography, MenuItem, InputLabel, Select, Button, FormHelperText, TextField, Input, Alert, AlertTitle } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../components/Iconify';
 // import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { FormProvider, RHFTextField } from '../components/hook-form'
-import { app, auth, db } from 'src/Contexts/firebaseConfig';
+import { app, auth, db, storage } from 'src/Contexts/firebaseConfig';
 import { useContext } from 'react';
 import { ImgView } from './CreatePost';
-import { forEach, max } from 'lodash';
 import { Form, Formik, useField } from 'formik';
 import CustomInput, { CustomSelect } from 'src/components/hook-form/CustomInput';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { User } from 'src/Contexts/UserContext';
 
 // ----------------------------------------------------------------------
-
+export const selectValues = ['Electronics', 'Gadgets', 'Buildings','Land', 'Apartments', 'Bikes', 'Cars', 'Laptop', 'Cycles', 'Desktop', 'Other']
 export default function PostForm() {
     const navigate = useNavigate();
-    // const {app } = useContext(FirebaseContext)
-    const [submitState, setSubmitState] = useState(true)
-    // const [category, setCategory] = useState('');
-    // const [price, setPrice] = useState('')
-    // const [name, setName] = useState('')
+    const [success, setSuccess] = useState(false)
     const { image, setImage, setImage2 } = useContext(ImgView)
-    const [propImg, setPropImg] = useState(null)
-    const [errorMessage, setErrorMsg] = useState('')
-    // return (
-    //     <FormProvider>
-    //         <Stack spacing={3}>
-    //             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-    //                 <TextField fullWidth required onChange={(e) => { setName(e.target.value) }} value={name} label="Product Name" />
-    //             </Stack>
-    //             <InputLabel>Category</InputLabel>
-
-    //             <Select
-    //                 required
-    //                 labelId="Category"
-    //                 value={category}
-    //                 name='category'
-    //                 // label="Category"
-    //                 placeholder='Category'
-    //                 onChange={(e) => { setCategory(e.target.value); }}
-    //             >
-    //                 <MenuItem>
-    //                     <em>None</em>
-    //                 </MenuItem>
-    //                 <MenuItem value='Building'>Building</MenuItem>
-    //                 <MenuItem value='Apartments'>Apartments</MenuItem>
-    //                 <MenuItem value='Vehicles'>Vehicles</MenuItem>
-    //                 <option value="Electronics">Electronics</option>
-    //                 <option value="Gadgets">Gadgets</option>
-    //                 <option value="Buildings">Buildings </option>
-    //                 <option value="Property">Property</option>
-    //                 <option value="Bikes"> Bikes </option>
-    //                 <option value="Cars"> Cars </option>
-    //                 <option value="Laptop"> Laptop </option>
-    //                 <option value="Cycles"> Cycles </option>
-    //                 <option value="Other"> Other </option>
-    //             </Select>
-    //             <Button
-    //                 variant="contained"
-    //                 component="label"
-    //                 color='warning'
-    //             >
-    //                 Upload File
-    //                 <input
-    //                     // required
-    //                     required
-    //                     type="file"
-    //                     multiple
-    //                     accept='image/*'
-    //                     hidden
-    //                     onChange={(e) => { setImage(e.target.files[0]); setPropImg(e.target.files[0]) }}
-    //                 />
-    //             </Button>
-    //             {/* <RHFTextField name="category" label="Product Category" /> */}
-    //             {/* <select name="category" onChange={(e) => { setCategory(e.target.value); }} >
-    //                 <option disabled >Choose your option </option>
-    //                 <option value="Electronics">Electronics</option>
-    //                 <option value="Gadgets">Gadgets</option>
-    //                 <option value="Buildings">Buildings </option>
-    //                 <option value="Property">Property</option>
-    //                 <option value="Bikes"> Bikes </option>
-    //                 <option value="Cars"> Cars </option>
-    //                 <option value="Laptop"> Laptop </option>
-    //                 <option value="Cycles"> Cycles </option>
-    //                 <option value="Other"> Other </option>
-    //             </select> */}
-    //             <TextField required value={price} type='number' onChange={(e) => { setPrice(e.target.value) }} label="Price" />
-    //             <Typography className='errorText'>{errorMessage && errorMessage}</Typography>
-    //             <Button color='info' variant="contained" onClick={() => { setSubmitState(!submitState) }} >Validate</Button>
-    //             <LoadingButton disabled={submitState} color='secondary' fullWidth size="large"
-    //                 onClick={handleSubmission} variant="contained" loading={submitState}>
-    //                 Submit
-    //             </LoadingButton>
-    //         </Stack>
-    //     </FormProvider>
-    // );
-    ///
-    // onSubmit={props.handleSubmit}<input
-    //                         type="text"
-    //                         onChange={props.handleChange}
-    //                         onBlur={props.handleBlur}
-    //                         value={props.values.name}
-    //                         name="name"
-    //                     />
-    const selectValues = ['Electronics', 'Gadgets', 'Buildings', 'Apartments', 'Bikes', 'Cars', 'Laptop', 'Cycles', 'Desktop', 'Other']
+    const { user } = useContext(User)
     const FILE_SIZE = 6001200;
     const SUPPORTED_FORMATS = [
         "image/jpg",
@@ -122,7 +37,7 @@ export default function PostForm() {
         "image/svg",
     ];
     const formSchema = Yup.object().shape({
-        name: Yup.string().min(5, 'Product Name too short').max(15, 'Invalid Product Name').required('Required Field'),
+        name: Yup.string().min(5, 'Product Name too short').max(20, 'Invalid Product Name').required('Required Field'),
         price: Yup.string().min(3, 'Price too Short').max(7, 'Price too High').required('Required Field'),
         category: Yup.string().oneOf(selectValues, 'Invalid Selection').required('Required Field'),
         image: Yup.mixed().required("Required")
@@ -137,22 +52,81 @@ export default function PostForm() {
             )
     })
 
+    const handlePost = (values, actions) => {
+        console.log('logging final VALUES', values)
+        console.log('logging actions', actions)
+        const { name, category, price, image } = values
+        const imageRef = ref(storage, `/productImages/${name + image.name}`)
+        uploadBytes(imageRef, image).then((snap) => {
+            console.log('upload Complete', snap);
+            getDownloadURL(snap.ref).then((url) => {
+                console.log('fethed URL', url);
+                addDoc(collection(db, 'products'), {
+                    name,
+                    category,
+                    price,
+                    url,
+                    userId: user.uid,
+                    postDate: new Date().toLocaleString()
+                }).catch((err) => console.log(err))
+            }).catch((err) => console.log(err))
+        }).catch((err) => console.log(err))
+        
+        setSuccess(true)
+        setTimeout(() => {
+            setSuccess(false);
+            // actions.setSubmitting(false)
+        }, 5000);
+        setTimeout(() => {
+            navigate('/')
+        }, 1000);
+        // getSuccessAlert()
+        // 
+        // addDoc(collection(db, 'webusers'), {
+        //     id: result.user.uid,
+        //     username: props.username,
+        //     email: props.email,
+        //     phone: props.phone
+        //   })
+        // .put(image).then((result) => {
+        //     result.ref.getDownloadURL().then((url) => {
+        //         console.log(url);
+        //         app.firestore().collection('products').add({
+        //             name,
+        //             category,
+        //             price,
+        //             url,
+        //             userId: 'user.uid',
+        //             postDate: new Date().toLocaleString()
+        //         }).catch((err) => console.log(err))
+        //         //   route.push('/')
+        //         alert('upload complete')
+        //     }).catch((err) => console.log(err))
+        // }).catch((err) => console.log(err))
+        // setTimeout(() => {
+        //     alert(JSON.stringify(values, null, 2));
+        //     actions.setSubmitting(false);
+        // }, 1000);
+    }
+    // useEffect(() => {
+    //     setTimeout(function () {
+    //         setSuccess(false);
+    //     }, 5000);
+    // }, [])
 
     return (
         <div>
+            {success && <Alert sx={{ mt: 2 }} variant="filled" severity="success" color="success">
+                Item Listed for Sale <strong>Successfully</strong>
+            </Alert>}
             <Formik
                 initialValues={{ name: '', category: '', price: '', image: undefined }}
                 validationSchema={formSchema}
-                onSubmit={(values, actions) => {
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        actions.setSubmitting(false);
-                    }, 1000);
-                }}
+                onSubmit={handlePost}
             >
                 {props => (
 
-                    <Form > {console.log('LOGGIN MAIN PROPS', props.values)}
+                    <Form > {console.log('LOGGIN MAIN PROPS', props, props.values)}
                         <CustomInput
                             label='Product Name'
                             name='name'
@@ -179,9 +153,7 @@ export default function PostForm() {
                             // focused
                             id="outlined-category"
                         />
-
                         {/* <Input type='file' name='file' onChange={(e)=>{props.setFieldValue('file',e.target.files[0])}}></Input> */}
-
                         {/* <CustomInput
                             label='Image'
                             name='file'
@@ -192,19 +164,18 @@ export default function PostForm() {
                             onChange={(e)=>{props.setFieldValue('image',e.target.files[0])}}
                         // onChange={(e)=>{setImage(e.target.files[0]);console.log('ONCHSNGE CALLED',props.values,e.target.files[0])}}
                         /> */}
-                        {/* <h6 className="successInput"> {props.values.image && 'Success'}</h6> */}
                         <Button
                             variant="contained"
                             component="label"
                             fullWidth
-                            disabled={props.values.image}
+                            disabled={props.values.image && SUPPORTED_FORMATS.includes(props.values.image.type)}
                             // color='primary'
                             color={props.errors.image ? 'warning' : 'primary'}
                             sx={{ mt: 1 }}
                         >
                             {props.errors.image ? <> {props.errors.image} &nbsp;<Iconify icon='bx:error' width={20} height={20} /> </>
-                                : props.values.image ? <> <span className='successInput'>Success &nbsp; </span> <Iconify 
-                                icon='icon-park:success' width={23} height={23} /> </>
+                                : props.values.image ? <> <span className='successInput'>Success &nbsp; </span> <Iconify
+                                    icon='flat-color-icons:ok' width={24} height={24} /> </>
                                     : <> Upload Files &nbsp; <Iconify icon="line-md:cloud-upload-loop" width={23} height={23} /> </>}
                             <input
                                 // required
@@ -217,43 +188,13 @@ export default function PostForm() {
                             />
                         </Button>
                         <h6 className='errorInput p'> {props.errors.image} </h6>
-
-                        {/* <CustomSelect label='Category' name='category'>
-                            <option value="hythanm">hythanm</option>
-                            <option value="local">local</option>
-                            <option value="goper">goper</option>
-
-                        </CustomSelect> */}
-                        {/* <TextField
-                            id="filled-select-category"
-                            // select
-                            label="Category"
-                            name='category'
-                            // value={category}
-                            fullWidth
-                            defaultValue=''
-                            onChange={(e)=>console.log(e.target.value)}
-                            // value={currency}
-                            // onChange={handleChange}
-                            helperText="Please select your currency"
-                            variant="filled"
-                        >
-                            <MenuItem disabled value=''> Please Select a Category </MenuItem>
-                            {selectValues.map((option) => (
-                                <MenuItem key={option} value={option}>
-                                    {option}
-                                </MenuItem>
-                            ))}
-                        </TextField> */}
-
-                        {/* {selectValues.map((value) => {
-                            console.log(value);
-                        })} */}
-                        {/* {props.errors.name && <div id="feedback">{props.errors.name}</div>} */}
-                        <button type="submit">Submit</button>
+                        <LoadingButton type='submit' color='success' variant='contained' fullWidth disabled={!props.isValid}
+                            loading={props.isSubmitting} >
+                            <span className={props.isValid ? 'textWhite' : 'textBlack'}> Submit</span> </LoadingButton>
                     </Form>
                 )}
             </Formik>
+
         </div>
     )
 }

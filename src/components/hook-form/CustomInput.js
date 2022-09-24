@@ -1,14 +1,12 @@
 import { Input, MenuItem, Select, TextField } from "@mui/material";
+import { selectValues } from "src/pages/CreatePostFormSimple";
 
 
 const { useField } = require("formik");
 
 
 const CustomInput = ({ ...props }) => {
-    // console.log(props);
-    const [field, meta, helpers] = useField(props)
-    // console.log('field', field);
-    // console.log('meta', meta);
+    const [field, meta] = useField(props)
     return (
         <div>
             <TextField 
@@ -23,11 +21,9 @@ const CustomInput = ({ ...props }) => {
 }
 
 export const CustomSelect = ({ ...props }) => {
-    const selectValues = ['Electronics', 'Gadgets', 'Buildings', 'Apartments', 'Bikes', 'Cars', 'Laptop', 'Cycles', 'Desktop', 'Other']
-    console.log(props);
-    const [field, meta, helpers] = useField(props)
-    console.log('fieldSelect', field);
-    console.log('metaSelect', meta);
+    // const selectValues = ['Electronics', 'Gadgets', 'Buildings', 'Apartments', 'Bikes', 'Cars', 'Laptop', 'Cycles', 'Desktop', 'Other']
+    const selections = selectValues
+    const [field, meta] = useField(props)
     return (
         <div>
             <TextField 
@@ -37,7 +33,7 @@ export const CustomSelect = ({ ...props }) => {
                 color={meta.error && meta.touched ? 'danger' : !meta.error && meta.touched ? 'success' : 'foggy'}
                 margin="normal" focused {...field} {...props} >
                 <MenuItem disabled value='null'> Please Select a Category </MenuItem>
-                {selectValues.map((option) => {
+                {selections.map((option) => {
                     return (
                         <MenuItem key={option} value={option}> {option} </MenuItem>
                     )

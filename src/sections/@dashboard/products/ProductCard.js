@@ -11,6 +11,8 @@ import { ColorPreview } from '../../../components/color-utils';
 import ProductView from '../../../pages/ProductView';
 import { SingleProduct } from 'src/Contexts/ProductContext';
 import { useContext } from 'react';
+import { User } from 'src/Contexts/UserContext';
+import Iconify from 'src/components/Iconify';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +34,14 @@ export default function ShopProductCard({ product }) {
   // console.log(product);
   // const { name, cover, price, colors, status, priceSale } = product;
   const {setSingleItem} = useContext(SingleProduct)
+  const {user} = useContext(User)
+  let admin = false
+  if(user){
+  if(user.email.includes("macrobay")){
+    admin = true
+  }else{
+    admin = false
+  }}
   const {name, category, postDate, price, url} = product
   const route = useNavigate()
   // let status =  //'-10%'  
@@ -42,8 +52,8 @@ export default function ShopProductCard({ product }) {
     route('/dashboard/viewproduct')
   }
   return (
-    <Card className='pointer' onClick={renderProduct}>
-      <Box sx={{ pt: '100%', position: 'relative' }}>
+    <Card className='pointer' >
+      <Box sx={{ pt: '100%', position: 'relative' }} onClick={renderProduct}>
         {status && (
           <Label
             variant="filled"
@@ -102,7 +112,9 @@ export default function ShopProductCard({ product }) {
         </Stack>
         <span style={{fontSize:'0.7rem',paddingTop:'0.5rem'}}>{postDate.slice(0,10)}</span>
         {/* <span style={{fontSize:'0.7rem',paddingTop:'0.5rem'}}>{postDate}</span> */}
+        {admin && <Button variant='outlined' color='error' > <Iconify width={24} height={24} icon='ic:round-delete-forever' /> </Button>}
       </Stack>
+      
     </Card>
   );
 }

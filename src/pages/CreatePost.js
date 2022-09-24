@@ -92,12 +92,12 @@ export default function CreatePost() {
               Enter Product Details
             </Typography>
 
-            <Typography sx={{ color: 'text.secondary', mb: 5 }}>Let's make some bucks !</Typography>
+            <Typography sx={{ color: 'text.secondary', mb: 2 }}>Let's make some bucks !</Typography>
             <ImgView.Provider value={{image,setImage,image2,setImage2}}>
             <ProductForm />
             </ImgView.Provider >
             <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
-              By Posting this for Sale, I agree to MacroBay&nbsp;
+              By Posting this item for Sale, I agree to MacroBay&nbsp;
               <Link underline="always" color="text.primary" href="#">
                 Terms of Service
               </Link>
@@ -137,10 +137,10 @@ export default function CreatePost() {
               </Link>
               .
             </Typography> */}
-            <div >
+            {image && <div > <h6>Uploaded image</h6>
             <img style={{marginTop:'0.3rem'}} src={image ? URL.createObjectURL(image) : ''}  />
             <img style={{marginTop:'0.3rem'}} src={image2 ? URL.createObjectURL(image2) : ''}  />
-            </div>
+            </div>}
             {/* <img src="https://firebasestorage.googleapis.com/v0/b/microbay-mza.appspot.com/o/productImages%2FKM%20300%20BXCgfgf-min.jpg?alt=media&token=4f21ed0f-cc3e-42c8-ac36-3c8202c3a265" alt="" /> */}
           {/* </ContentStyle> */}
           {/* </SectionStyle> */}
