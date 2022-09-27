@@ -133,15 +133,15 @@ export function UserPage() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="User">
+    <Page title="Users">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
-          </Button>
+          <Button component={RouterLink} to="#" >
+            <div className="green">
+          <Iconify icon="akar-icons:circle-plus-fill" width={25} height={25}/></div></Button>
         </Stack>
 
         <Card>

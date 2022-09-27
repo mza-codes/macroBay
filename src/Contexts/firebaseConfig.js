@@ -15,10 +15,13 @@ const config = {
 
 export default initializeApp(config)
 
-export const app = initializeApp(config) ;console.log('logging APP Firebase',app);
+export const app = initializeApp(config) ;
 
-export const storage = getStorage(app) ;console.log('logging storage',storage);
+export const storage = getStorage(app) ;
 
-export const auth = getAuth(app) ;console.log('logging auth MAIN',auth);
+export const auth = getAuth(app) ;
 
-export const db = getFirestore(app) ;console.log('logging db',db);
+export const db = getFirestore(app) ;
+
+// console.log('logging db',db);console.log('logging auth MAIN',auth);
+//console.log('logging storage',storage);console.log('logging APP Firebase',app);

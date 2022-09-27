@@ -6,13 +6,11 @@ import { addDoc, collection, doc, setDoc } from "firebase/firestore"
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Stack, Typography, MenuItem, InputLabel, Select, Button, FormHelperText, TextField, Input, Alert, AlertTitle } from '@mui/material';
+import { Button, Alert, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../components/Iconify';
-// import { FormProvider, RHFTextField } from '../../../components/hook-form';
-import { FormProvider, RHFTextField } from '../components/hook-form'
-import { app, auth, db, storage } from 'src/Contexts/firebaseConfig';
+import { db, storage } from 'src/Contexts/firebaseConfig';
 import { useContext } from 'react';
 import { ImgView } from './CreatePost';
 import { Form, Formik, useField } from 'formik';
@@ -77,8 +75,7 @@ export default function PostForm() {
             setSuccess(false);
         }, 5000);
         setTimeout(() => {
-            sessionStorage.removeItem('localProducts');
-            navigate('/',{replace:true})
+            navigate('/')
         }, 1000);
     }
 
@@ -94,7 +91,7 @@ export default function PostForm() {
             >
                 {props => (
 
-                    <Form > {console.log('LOGGIN MAIN PROPS', props, props.values)}
+                    <Form >
                         <CustomInput
                             label='Product Name'
                             name='name'

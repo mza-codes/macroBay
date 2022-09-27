@@ -36,9 +36,11 @@
 
 .green{
     color: green !important;
-    border-color: green !important;
 }
 
+.red{
+    color: red !important;
+}
 .bold{
     font-weight: 900;
 }

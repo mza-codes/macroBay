@@ -1,24 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // material
 import { Menu, Button, MenuItem, Typography } from '@mui/material';
 // component
-import Iconify from '../../../components/Iconify';
-import { useContext } from 'react';
-import { ProductsRefresh } from 'src/pages/Products';
-import { useEffect } from 'react';
+// import Iconify from '../../../components/Iconify';
+import Iconify from 'src/components/Iconify';
 import * as _ from "lodash";
+import { useContext } from 'react';
+import { SortResult } from './Result';
 
 // ----------------------------------------------------------------------
 
 
 
-export default function ShopProductSort() {
+export default function ResultSort() {
   const [open, setOpen] = useState(null);
-  let localProducts 
-  const [label, setLabel] = useState('')
-  const { setReload } = useContext(ProductsRefresh)
-  var storedArray = sessionStorage.getItem("localProducts");
+  let localProducts
+  const { products, setProducts, reload, setReload } = useContext(SortResult)
 
+  const [label, setLabel] = useState('')
+  // const { setReload } = useContext(ProductsRefresh)
+  var storedArray = products
+  
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
@@ -40,7 +42,7 @@ export default function ShopProductSort() {
     if (storedArray == null) {
       console.log('storedArray NULL Found FIX THIS');
     } else {
-      localProducts = JSON.parse(storedArray)
+      localProducts = storedArray
       if (state === 'date') {
         sorted = _.sortBy(localProducts, 'name').reverse()
         // sorted = localProducts.sort((a, b) =>
@@ -53,9 +55,14 @@ export default function ShopProductSort() {
         sorted = _.sortBy(localProducts, 'name')
       }
 
-      sessionStorage.setItem("localProducts", JSON.stringify(sorted));
-      setReload(true)
+      // sessionStorage.setItem("localProducts", JSON.stringify(sorted));
+      // setReload(true)
+      console.log('SORTED DATA',sorted);
+      setProducts(sorted)
       setOpen(null)
+      // setReload(true)
+      state= null
+      props = null
     }
 
   }
@@ -80,6 +87,7 @@ export default function ShopProductSort() {
         anchorEl={open}
         open={Boolean(open)}
         onClose={handleClose}
+        // onClick={() => { setReload(false) }}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >

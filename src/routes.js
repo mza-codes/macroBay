@@ -16,19 +16,21 @@ import { User } from './Contexts/UserContext';
 import { SingleProduct } from './Contexts/ProductContext';
 import ProductView from './pages/ProductView';
 import CreatePost from './pages/CreatePost';
+import Result from './pages/Result';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   const {user} = useContext(User)
   const {singleItem} = useContext(SingleProduct)
-  let productRoute
+  let productRoute , resultRoute
   let loginRoute
   let signupRoute
   let createPost
   user ? loginRoute = <UserError /> : loginRoute = <Login />
   user ? signupRoute = <UserError /> : signupRoute = <Register />
   user ? createPost = <CreatePost /> : createPost = <Login />
+  resultRoute = <Result />
   if (singleItem!=null){
     productRoute =  <ProductView />
   }else{
@@ -44,7 +46,8 @@ export default function Router() {
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
         { path: 'viewproduct', element: productRoute },
-        { path: 'create', element: createPost }
+        { path: 'create', element: createPost },
+        { path: 'result', element: resultRoute }
       ],
     },
     {

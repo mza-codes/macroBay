@@ -10,6 +10,7 @@ import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
 import useResponsive from 'src/hooks/useResponsive';
+import SearchbarPopOver from './SearchbarPopover';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +44,10 @@ DashboardNavbar.propTypes = {
 
 export default function DashboardNavbar({ onOpenSidebar }) {
   const isDesktop = useResponsive('up', 'lg');
+  const isMobile = useResponsive('down','sm')
+  const isMd = useResponsive('down','md')
+  // console.log('isDesktop',isDesktop,'isMobile',isMobile)
+  // console.log('isMd lo::',isMd);
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -50,7 +55,8 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        <Searchbar />
+        {!isMobile && !isMd && <Searchbar /> }
+        {/* {} */}
 
         {/* <div>
           <Box alignContent='center' alignItems='center' textAlign='center' sx={{ color: 'darkgreen', mx: 'auto', display: 'flex', fontSize: 14 }}>
@@ -75,6 +81,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
 
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+          <SearchbarPopOver />
           <LanguagePopover />
           <NotificationsPopover />
           <AccountPopover />

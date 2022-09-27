@@ -7,15 +7,15 @@ import { ProductsRefresh } from 'src/pages/Products';
 import { useContext } from 'react';
 
 // ----------------------------------------------------------------------
-
+// const pos = 26
 const RootStyle = styled('div')(({ theme }) => ({
   zIndex: 999,
-  right: 0,
+  left: 0,
   display: 'flex',
   cursor: 'pointer',
   position: 'fixed',
   alignItems: 'center',
-  top: theme.spacing(16),
+  top: theme.spacing(18),
   height: theme.spacing(5),
   paddingLeft: theme.spacing(2),
   paddingRight: theme.spacing(2),
@@ -36,7 +36,7 @@ const RefreshButton = styled('div')(({ theme }) => ({
   cursor: 'pointer',
   position: 'fixed',
   alignItems: 'center',
-  top: theme.spacing(22),
+  top: theme.spacing(26),
   height: theme.spacing(5),
   paddingLeft: theme.spacing(2),
   paddingRight: theme.spacing(2),
@@ -56,7 +56,7 @@ export default function CartWidget() {
   return (
     <div>
       <RootStyle>
-        <Badge showZero badgeContent={0} color="error" max={99}>
+        <Badge showZero badgeContent={17} color="error" max={99}>
           <Iconify icon="eva:shopping-cart-fill" width={24} height={24} />
         </Badge>
       </RootStyle>
