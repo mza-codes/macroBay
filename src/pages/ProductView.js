@@ -28,7 +28,7 @@ export default function ProductView() {
             getDocs(q).then((result) => {
                 console.log(result);
                 result.forEach((doc) => {
-                    console.log('Logging data.ForEach',doc.data());
+                    console.log('Logging data.ForEach', doc.data());
                     setSeller(doc.data())
                 })
             })
@@ -46,12 +46,9 @@ export default function ProductView() {
     let product = singleItem
     return (
         <Page title={`${product.name} Details`}>
-            {/* <Container maxWidth="xl"> */}
-            <Grid container spacing={2}>
-                <Grid spacing={2} item xs={12} md={6} lg={8} container
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="center">
+            <Container >
+            <Grid container item direction="row" alignItems="center" justifyContent="center" xs='auto'>
+                <Grid container item xs={12} md={6} alignItems="center" justifyContent="center" >
                     {/* <ProductImgStyle alt={product.name} src={product.url} /> */}
                     <img style={{ maxWidth: '45vw', maxHeight: '70vh' }} src={product.url} alt={product.name} />
                 </Grid>
@@ -60,9 +57,10 @@ export default function ProductView() {
                     direction="row"
                     alignContent="flex-start"
                     justifyContent=""> */}
-                <Grid item xs="auto" md lg sx={{ m: 1, p: 2 }}  >
-                    <h3>Product Details:</h3>
+                <Grid item container xs={12} md={6} sx={{ alignItems: { xs: 'center' }, justifyContent: { xs: 'center' } }} >
+
                     <div style={{ padding: '0.7rem' }}>
+                        <h3>Product Details:</h3>
                         <h3> {product.name}</h3>
                         <h4>Listed Under: {product.category}</h4>
                         <h4>Listed on: {product.postDate}</h4>
@@ -70,20 +68,25 @@ export default function ProductView() {
                         <h2>₹ {product.price}/-</h2>
                         <h6>*Listed price can be negotiaited with Seller</h6>
                     </div>
-                    <h3 style={{ paddingTop: '0.7rem' }}>Seller Details:</h3>
-                    <div>{user ? <div style={{ padding: '0.7rem' }}>
-                        <h4>{seller ? seller.username : 'Unknown'}</h4>
-                        <h4>{seller ? seller.phone : 'Unknown'}</h4>
-                        <h4>Location: Kannur,Kerala,India </h4>
-                    </div> :
-                        <div style={{ margin: '0.6rem' }}>
-                            <h4 style={{ marginTop: '0.6rem' }}>Please <Link to='/login'>Login</Link> to Continue</h4>
-                            {/* <Button variant="contained" >Login</Button>  */}
-                        </div>}
-                    </div>
+                    <Grid item container xs={12} md={6} lg={12} xl={12} 
+                    sx={{ alignItems: { xs: 'center' }, justifyContent: { xs: 'center' } }} >
+                        {user ? <div>
+                            <h3 >Seller Details:</h3>
+                            <h4>{seller ? seller.username : 'Unknown'}</h4>
+                            <h4>{seller ? seller.phone : 'Unknown'}</h4>
+                            <h4>Location: Kannur,Kerala,India </h4>
+                            <h4>Seller Avatar: </h4>
+                            {seller && seller.avatar && <img className="imageRound" src={seller.avatar} alt="" />}
+                        </div> :
+                            <div>
+                                <h3 >Seller Details:</h3>
+                                <h4 style={{ marginTop: '0.6rem' }}>Please <Link to='/login'>Login</Link> to Continue</h4>
+                            </div>
+                        }
+                    </Grid>
                 </Grid>
             </Grid>
-            {/* </Container> */}
+            </Container>
         </Page>
     );
 }

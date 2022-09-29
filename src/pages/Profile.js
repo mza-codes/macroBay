@@ -15,7 +15,7 @@ import account from "src/_mock/account";
 import * as Yup from 'yup'
 import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "src/Contexts/firebaseConfig";
-import { collection, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 
 
 // const ProfileImg = styled('img')({
@@ -225,12 +225,36 @@ export default function Profile() {
                 value => value && value.size <= FILE_SIZE
             )
     })
-    const storeData = () => {
+    const storeData = async (key,url) => {
         console.log('StoreData Called');
-        // const docRef = ref(collection(db, 'webusers'))
-        updateDoc(collection(db, 'webusers'),{
-            top:45
-        }).then((r)=> console.log(r))
+        console.log(key,url);
+        let docId
+        const q = query(collection(db, 'webusers'), where('id', '==', user.uid))
+        await getDocs(q).then((result) => {
+            console.log(result)
+            result.forEach((doc)=>{
+                console.log(doc.id,'==',doc.data());
+                docId = doc.id
+            })
+        }).catch((err) => { console.log(err); })
+
+        const docRef = doc(db, 'webusers', docId)
+        const value = {
+            avatar: user.photoURL,
+            profileKey: key
+        }
+        console.log(';;initialValue,',value);
+        await updateDoc(docRef, value)
+        .then((response) => console.log(response))
+        .catch((err) => { console.log(err); })
+
+        setComplete(true)
+        setTimeout(() => {
+            setComplete(false)
+            navigate('/')
+        }, 2500);
+        setTick(true)
+
     }
     const setUploadedImage = async (values, actions) => {
         setLoading2(true)
@@ -258,12 +282,13 @@ export default function Profile() {
         setLoading2(false)
         setImage(url)
         await updateProfile(user, { photoURL: url })
-        setComplete(true)
-        setTimeout(() => {
-            setComplete(false)
-            navigate('/')
-        }, 2500);
-        setTick(true)
+        storeData(key,url)
+        // setComplete(true)
+        // setTimeout(() => {
+        //     setComplete(false)
+        //     navigate('/')
+        // }, 2500);
+        // setTick(true)
     }
 
 
@@ -323,7 +348,7 @@ export default function Profile() {
                                         <Typography m={0.2} wrap="wrap" variant="subtitle2"> UserID: {user.uid}</Typography>
                                     </Tooltip> </>}
                                 {/* <Iconify icon='ep:warning-filled' /> */}
-                                <IconButton sx={{ mt: 2.5 }} onClick={storeData}>
+                                <IconButton sx={{ mt: 2.5 }} >
                                     <Iconify icon='fa-solid:user-edit' />
                                 </IconButton>
                                 <Button onClick={() => { setShow(!show) }} >Get Random Image</Button>
