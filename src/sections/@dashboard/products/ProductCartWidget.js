@@ -55,11 +55,11 @@ export default function CartWidget() {
   const {setReload} = useContext(ProductsRefresh)
   return (
     <div>
-      <RootStyle>
+      {/* <RootStyle>
         <Badge showZero badgeContent={17} color="error" max={99}>
           <Iconify icon="eva:shopping-cart-fill" width={24} height={24} />
         </Badge>
-      </RootStyle>
+      </RootStyle> */}
       <RefreshButton onClick={() => { sessionStorage.removeItem("localProducts"); setReload(true) }}>
         <Badge color="warning">
           <Iconify icon="fontisto:cloud-refresh" width={25} height={25} />

@@ -6,7 +6,7 @@ import { addDoc, collection, doc, setDoc } from "firebase/firestore"
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Button, Alert, InputAdornment } from '@mui/material';
+import { Button, Alert, InputAdornment, Tooltip, IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../components/Iconify';
@@ -58,7 +58,7 @@ export default function PostForm() {
         uploadBytes(imageRef, image).then((snap) => {
             console.log('upload Complete', snap);
             getDownloadURL(snap.ref).then((url) => {
-                console.log('fethed URL', url);
+                console.log('fetched URL', url);
                 addDoc(collection(db, 'products'), {
                     name,
                     category,
@@ -90,8 +90,14 @@ export default function PostForm() {
                 onSubmit={handlePost}
             >
                 {props => (
-
+                    
                     <Form >
+                        {/* {console.log(props)} */}
+                        <div style={{float:'right'}}> <Tooltip title="Clear Fields">
+                            <IconButton color="primary" onClick={() => { props.handleReset() }}> 
+                                <Iconify icon="pajamas:clear-all" width={20} height={20} />
+                            </IconButton>
+                        </Tooltip></div>
                         <CustomInput
                             label='Product Name'
                             name='name'
@@ -152,10 +158,11 @@ export default function PostForm() {
                                 onChange={(e) => { props.setFieldValue('image', e.target.files[0]); setImage(e.target.files[0]); }}
                             />
                         </Button>
-                        <h6 className='errorInput p'> {props.errors.image} </h6>
+                        <h6 className='errorInput p' style={{marginLeft:'0.4rem'}} > {props.errors.image} </h6>
                         <LoadingButton type='submit' color='success' variant='contained' fullWidth disabled={!props.isValid}
                             loading={props.isSubmitting} >
                             <span className={props.isValid ? 'textWhite' : 'textBlack'}> Submit</span> </LoadingButton>
+                            
                     </Form>
                 )}
             </Formik>

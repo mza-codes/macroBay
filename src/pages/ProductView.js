@@ -26,7 +26,9 @@ export default function ProductView() {
         const q = query(collection(db, 'webusers'), where('id', '==', userId))
         try {
             getDocs(q).then((result) => {
+                console.log(result);
                 result.forEach((doc) => {
+                    console.log('Logging data.ForEach',doc.data());
                     setSeller(doc.data())
                 })
             })

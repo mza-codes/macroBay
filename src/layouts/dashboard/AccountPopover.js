@@ -22,7 +22,7 @@ const MENU_OPTIONS = [
   {
     label: 'Profile',
     icon: 'eva:person-fill',
-    linkTo: '#',
+    linkTo: '/dashboard/profile',
   },
   {
     label: 'Settings',
@@ -80,7 +80,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={user && user.photoURL ? user.photoURL : account.photoURL} alt="photoURL" />
       </IconButton>
 
       <MenuPopover

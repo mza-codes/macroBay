@@ -14,7 +14,7 @@ import * as _ from "lodash";
 
 export default function ShopProductSort() {
   const [open, setOpen] = useState(null);
-  let localProducts 
+  let localProducts
   const [label, setLabel] = useState('')
   const { setReload } = useContext(ProductsRefresh)
   var storedArray = sessionStorage.getItem("localProducts");
@@ -30,34 +30,52 @@ export default function ShopProductSort() {
   const SORT_BY_OPTIONS = [
     { value: 'name', state: '-', label: 'Featured' },
     { value: 'postDate', state: 'date', label: 'Newest' },
-    { value: 'price', state: 'priceHigh', label: 'Price: Low-High' },
-    { value: 'price', state: '-', label: 'Price: High-Low' }
+    { value: 'price', state: '-', label: 'Price: Low-High' },
+    { value: 'price', state: 'priceHigh', label: 'Price: High-Low' }
   ];
 
-  const handleSort = (props, state) => {
-    console.log(props, state);
+  // const handleSort = (props, state) => {
+  //   console.log(props, state);
+  //   let sorted
+  //   if (storedArray == null) {
+  //     console.log('storedArray NULL Found FIX THIS');
+  //   } else {
+  //     localProducts = JSON.parse(storedArray)
+  //     if (state === 'date') {
+  //       sorted = _.sortBy(localProducts, 'name').reverse()
+  //       // sorted = localProducts.sort((a, b) =>
+  //       //   a.postDate.split('/').reverse().join().localeCompare(b.postDate.split('/').reverse().join()))
+  //     } else if (props === 'price' && state === 'priceHigh') {
+  //       sorted = localProducts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+  //     } else if (props === 'price') {
+  //       sorted = localProducts.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+  //     } else {
+  //       sorted = _.sortBy(localProducts, 'name')
+  //     }
+  //     sessionStorage.setItem("localProducts", JSON.stringify(sorted));
+  //     setReload(true)
+  //     setOpen(null)
+  //   }
+  // }
+  const handleSort = (field, arg) => {
     let sorted
+    console.log(field, arg);
     if (storedArray == null) {
       console.log('storedArray NULL Found FIX THIS');
     } else {
       localProducts = JSON.parse(storedArray)
-      if (state === 'date') {
-        sorted = _.sortBy(localProducts, 'name').reverse()
-        // sorted = localProducts.sort((a, b) =>
-        //   a.postDate.split('/').reverse().join().localeCompare(b.postDate.split('/').reverse().join()))
-      } else if (props === 'price' && state === 'priceHigh') {
-        sorted = localProducts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-      } else if (props === 'price') {
-        sorted = localProducts.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+      if (arg === 'priceHigh') {
+        sorted = _.sortBy(localProducts, field).reverse()
+      } else if (field === 'postDate') {
+        sorted = _.sortBy(localProducts, field).reverse()
       } else {
-        sorted = _.sortBy(localProducts, 'name')
+        sorted = _.sortBy(localProducts, field)
       }
-
       sessionStorage.setItem("localProducts", JSON.stringify(sorted));
       setReload(true)
       setOpen(null)
-    }
 
+    }
   }
   // useEffect(() => {
 

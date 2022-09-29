@@ -1,9 +1,10 @@
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Button, Typography, Container, Box } from '@mui/material';
+import { Button, Typography, Container, Box, IconButton } from '@mui/material';
 // components
 import Page from '../components/Page';
+import Iconify from 'src/components/Iconify';
 
 // ----------------------------------------------------------------------
 
@@ -68,9 +69,9 @@ export function ErrorLogo() {
         sx={{ height: 260, mx: 'auto', my: { xs: 5, sm: 10 } }}
       />
 
-      <Button to="/" color='error' size="large" variant="contained" component={RouterLink}>
-        Go to Home
-      </Button>
+      <IconButton to="/" color='error' size="large" variant="contained" component={RouterLink}>
+       <Iconify icon='bx:home' width={24} height={24} />
+      </IconButton>
     </Box>
   )
 }

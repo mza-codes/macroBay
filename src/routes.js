@@ -17,19 +17,23 @@ import { SingleProduct } from './Contexts/ProductContext';
 import ProductView from './pages/ProductView';
 import CreatePost from './pages/CreatePost';
 import Result from './pages/Result';
+import Profile from './pages/Profile';
+import ImageView from './pages/ImageView';
+import ImgSingleView from './pages/ImgSingleView';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   const {user} = useContext(User)
   const {singleItem} = useContext(SingleProduct)
-  let productRoute , resultRoute
+  let productRoute , resultRoute , profileRoute
   let loginRoute
   let signupRoute
   let createPost
   user ? loginRoute = <UserError /> : loginRoute = <Login />
   user ? signupRoute = <UserError /> : signupRoute = <Register />
-  user ? createPost = <CreatePost /> : createPost = <Login />
+  user ? createPost = <CreatePost /> : createPost = loginRoute
+  user ? profileRoute = <Profile /> : profileRoute = loginRoute
   resultRoute = <Result />
   if (singleItem!=null){
     productRoute =  <ProductView />
@@ -47,9 +51,12 @@ export default function Router() {
         { path: 'blog', element: <Blog /> },
         { path: 'viewproduct', element: productRoute },
         { path: 'create', element: createPost },
-        { path: 'result', element: resultRoute }
+        { path: 'result', element: resultRoute },
+        { path: 'profile', element: profileRoute },
       ],
     },
+    { path: 'images', element: <ImageView /> },
+    { path: 'imagesingle', element: <ImgSingleView /> },
     {
       path: 'login',
       element: loginRoute,

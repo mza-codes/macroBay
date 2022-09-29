@@ -19,7 +19,7 @@ export default function ResultSort() {
 
   const [label, setLabel] = useState('')
   // const { setReload } = useContext(ProductsRefresh)
-  var storedArray = products
+  // var storedArray = products
   
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -39,20 +39,25 @@ export default function ResultSort() {
   const handleSort = (props, state) => {
     console.log(props, state);
     let sorted
-    if (storedArray == null) {
+    if (products == null) {
       console.log('storedArray NULL Found FIX THIS');
     } else {
-      localProducts = storedArray
+      localProducts = products
       if (state === 'date') {
-        sorted = _.sortBy(localProducts, 'name').reverse()
+        console.log('sort by date');
+        // sorted = _.sortBy(localProducts, 'date').reverse()
+        sorted = _.sortBy(localProducts, 'postDate').reverse()
         // sorted = localProducts.sort((a, b) =>
         //   a.postDate.split('/').reverse().join().localeCompare(b.postDate.split('/').reverse().join()))
       } else if (props === 'price' && state === 'priceHigh') {
-        sorted = localProducts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        // sorted = localProducts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        sorted = _.sortBy(localProducts, 'price')
       } else if (props === 'price') {
-        sorted = localProducts.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        // sorted = localProducts.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        sorted = _.sortBy(localProducts, 'price').reverse()
       } else {
         sorted = _.sortBy(localProducts, 'name')
+        // sorted = _.sortBy(localProducts, ['name','price'])
       }
 
       // sessionStorage.setItem("localProducts", JSON.stringify(sorted));

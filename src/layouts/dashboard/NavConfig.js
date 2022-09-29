@@ -74,6 +74,12 @@ export const navConfig2 = [
     icon: getIcon('eva:shopping-bag-fill'),
   },
   {
+    title: 'profile',
+    path: '/dashboard/profile',
+    // icon: getIcon('charm:person'),
+    icon: getIcon('bi:person-fill')
+  },
+  {
     title: 'dashboard',
     path: '/dashboard/app',
     icon: getIcon('eva:pie-chart-2-fill'),
@@ -87,13 +93,19 @@ export const navConfig2 = [
   {
     title: 'sell',
     path: '/dashboard/create',
-    icon: getIcon('bi:file-earmark-post-fill'),
+    icon: getIcon('fluent:document-add-20-filled'),
   },
   {
     title: 'blog',
     path: '/dashboard/blog',
     icon: getIcon('eva:file-text-fill'),
-  }
+  },
+  {
+    title: 'images',
+    path: '/images',
+    icon: getIcon('ic:round-collections'),
+  },
+  
 ];
 
 export default navConfig;

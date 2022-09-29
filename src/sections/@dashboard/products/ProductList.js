@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { db } from 'src/Contexts/firebaseConfig';
 import { useContext } from 'react';
 import { ProductsRefresh } from 'src/pages/Products';
+import _ from 'lodash';
 
 // ----------------------------------------------------------------------// products,
 
@@ -28,7 +29,8 @@ export default function ProductList({ ...other }) {
           id: product.id
         }
       })
-      sessionStorage.setItem("localProducts", JSON.stringify(localItems));
+      let sorted = _.sortBy(localItems, 'postDate').reverse()
+      sessionStorage.setItem("localProducts", JSON.stringify(sorted));
       const localData = sessionStorage.getItem("localProducts");
       let localProducts = JSON.parse(localData);
       console.log('DATA Fetched from Server,logging STORED ARRAY::: ', localProducts);

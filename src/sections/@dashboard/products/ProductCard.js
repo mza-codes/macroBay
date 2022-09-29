@@ -148,7 +148,7 @@ export default function ShopProductCard({ product }) {
             </Typography> */}
             &nbsp;
             {/* {fCurrency(price)} */}
-            ₹ {price}
+            ₹ {price} /-
           </Typography>
           <Typography
             component="span"
