@@ -7,7 +7,7 @@ import { Form, Formik } from "formik";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Iconify from "src/components/Iconify";
 import Page from "src/components/Page";
 import { User } from "src/Contexts/UserContext";
@@ -16,6 +16,8 @@ import * as Yup from 'yup'
 import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "src/Contexts/firebaseConfig";
 import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import EditProfile from "./ProfileEdit";
+import { useRef } from "react";
 
 
 // const ProfileImg = styled('img')({
@@ -66,21 +68,18 @@ export default function Profile() {
     const [tick, setTick] = useState(false)
     const { user, setUser } = useContext(User)
     const [complete, setComplete] = useState(false)
+    const [userData, setUserData] = useState(null)
     // const [touched, setTouched] = useState(false)
+    const [updated, setUpdated] = useState(false)
+    const [docId, setDocId] = useState()
+    const [popup, setPopup] = useState(false)
     const [loading2, setLoading2] = useState(false)
     const [profile, setProfile] = useState({
         touched: false,
         image: undefined,
     })
-    const [crop, setCrop] = useState({
-        unit: 'px', // Can be 'px' or '%'
-        x: 25,
-        y: 25,
-        width: 150,
-        height: 150
-    })
-
     const navigate = useNavigate()
+    const [disabled, setDisabled] = useState(false)
 
     const AvatarImg = styled('img')({
         top: 0,
@@ -113,8 +112,8 @@ export default function Profile() {
             height: '300',
             width: '500'
         }
-        if (width <= 5000 && height <= 5000 &&
-            width > 150 && height > 150) {
+        if (width <= 500 && height <= 500 &&
+            width >= 30 && height >= 30) {
             console.log('trueState');
             let photo = `https://picsum.photos/${width}/${height}`
             // setPic(photo)
@@ -167,6 +166,24 @@ export default function Profile() {
 
     }
 
+    const storeData = async (key) => {
+        const docRef = doc(db, 'webusers', docId)
+        const value = {
+            avatar: user.photoURL,
+            profileKey: key,
+            docId
+        }
+        await updateDoc(docRef, value)
+            .then((response) => console.log(response))
+            .catch((err) => { console.log(err); })
+        setComplete(true)
+        setTimeout(() => {
+            setComplete(false)
+            navigate('/')
+        }, 2500);
+        // setTick(true)
+    }
+
     const showProfiles = () => {
         setProfile({ touched: true })
         let values = []
@@ -192,18 +209,30 @@ export default function Profile() {
             setTick(false)
             return false
         }
-        user.photoURL = image
+        if (user.photoURL && user.photoURL.includes('firebasestorage', 'microbay')) { // use profileKey validation
+            console.log('includes');
+            console.log('userData logg', userData)
+            const delRef = ref(storage, userData.avatar)
+            let metadata = await getMetadata(delRef)
+            console.log(metadata);
+            console.log(metadata.fullPath);
+            await deleteObject(ref(storage, metadata.fullPath))
+        }
+        setUploadErr(false)
+        // user.photoURL = image
+
         await updateProfile(user, { photoURL: image })
-        console.log(user);
-        // setUser(user)
-        setComplete(true)
-        setTimeout(() => {
-            setComplete(false)
-            navigate('/')
-        }, 2000);
+        console.log(user)
+        let key = 'localAvatar'
+        storeData(key)
+        setLoading2(false)
+        // setTimeout(() => {
+        //     setComplete(false)
+        //     navigate('/')
+        // }, 2000);
     }
 
-    const FILE_SIZE = 3001200;
+    const FILE_SIZE = 2001200;
     const SUPPORTED_FORMATS = [
         "image/jpg",
         "image/jpeg",
@@ -225,43 +254,35 @@ export default function Profile() {
                 value => value && value.size <= FILE_SIZE
             )
     })
-    const storeData = async (key,url) => {
-        console.log('StoreData Called');
-        console.log(key,url);
-        let docId
+
+    const fetchUserData = async () => {
+        let docData, docID
+        console.log(user.uid);
         const q = query(collection(db, 'webusers'), where('id', '==', user.uid))
         await getDocs(q).then((result) => {
             console.log(result)
-            result.forEach((doc)=>{
-                console.log(doc.id,'==',doc.data());
-                docId = doc.id
+            if (result.docs.length === 0) {
+                console.log('if true entered docs length ===0 ');
+                setDisabled(true)
+                return false
+            }
+            result.forEach((doc) => {
+                docID = doc.id
+                docData = doc.data()
             })
+            setDocId(docID)
+            setUserData(docData)
         }).catch((err) => { console.log(err); })
-
-        const docRef = doc(db, 'webusers', docId)
-        const value = {
-            avatar: user.photoURL,
-            profileKey: key
-        }
-        console.log(';;initialValue,',value);
-        await updateDoc(docRef, value)
-        .then((response) => console.log(response))
-        .catch((err) => { console.log(err); })
-
-        setComplete(true)
-        setTimeout(() => {
-            setComplete(false)
-            navigate('/')
-        }, 2500);
-        setTick(true)
-
     }
-    const setUploadedImage = async (values, actions) => {
+
+    useEffect(() => {
+        fetchUserData()
+    }, [updated])
+
+    const setUploadedImage = async (values) => {
         setLoading2(true)
         setUploadErr(false)
-        console.log(values, ':::', actions)
-        // 
-        if (user.photoURL && user.photoURL.includes('firebasestorage', 'microbay')) {
+        if (user.photoURL && user.photoURL.includes('firebasestorage', 'microbay')) { // use profileKey validation
             console.log('includes');
             const delRef = ref(storage, user.photoURL)
             let metadata = await getMetadata(delRef)
@@ -282,7 +303,7 @@ export default function Profile() {
         setLoading2(false)
         setImage(url)
         await updateProfile(user, { photoURL: url })
-        storeData(key,url)
+        storeData(key, url)
         // setComplete(true)
         // setTimeout(() => {
         //     setComplete(false)
@@ -291,7 +312,15 @@ export default function Profile() {
         // setTick(true)
     }
 
-
+    const ContentStyle = styled('div')(({ theme }) => ({
+        maxWidth: 480,
+        margin: 'auto',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        padding: theme.spacing(12, 0),
+    }));
 
     return (
         <div>
@@ -342,18 +371,28 @@ export default function Profile() {
                                 alignItems="flex-start" item xs={12} sx={{ alignItems: { xs: 'center', md: 'flex-start' } }} md={6} >
                                 {user && <> <Typography m={0.2} variant="subtitle1"> Name: {user.displayName} </Typography>
                                     <Typography m={0.2} variant="subtitle2"> E-Mail: {user.email} </Typography>
-                                    <Typography m={0.2} variant="subtitle2"> Mobile: {user.phone} </Typography>
+
+                                    {userData && <> <Typography m={0.2} variant="subtitle2"> Phone: {userData.phone}</Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Alt Mobile: {userData.altMobile} </Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Pin Code: {userData.pincode} </Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Location: {userData.location} </Typography> </>}
                                     <Typography m={0.2} variant="subtitle2"> Join Date: 19/08/2022 </Typography>
                                     <Tooltip title='This UserID is generated on account creation & rarely useful to User'>
-                                        <Typography m={0.2} wrap="wrap" variant="subtitle2"> UserID: {user.uid}</Typography>
+                                        <Typography m={0.2} variant="subtitle2"> UserID: {user.uid}</Typography>
                                     </Tooltip> </>}
                                 {/* <Iconify icon='ep:warning-filled' /> */}
-                                <IconButton sx={{ mt: 2.5 }} >
+                                {updated ? <IconButton color="success" sx={{ float: 'right', mt: 1 }}>
+                                    <Iconify icon='charm:circle-tick' />
+                                </IconButton> : <> <IconButton disabled={disabled} sx={{ mt: 2.5 }} onClick={() => { setPopup(true) }} >
                                     <Iconify icon='fa-solid:user-edit' />
-                                </IconButton>
-                                <Button onClick={() => { setShow(!show) }} >Get Random Image</Button>
+                                </IconButton> {disabled && <Typography m={1} variant="overline" color='error' >
+                                    User Data Not Found in Database! </Typography>} </>
+                                }
+                                <Button onClick={() => { setShow(!show) }} disabled={disabled} >Get Random Image</Button>
                             </Grid>
-
+                            {/* PopUP Start */}
+                            {popup && <EditProfile value={[popup, setPopup, userData, docId, updated, setUpdated]} />}
+                            {/* Close PopUP */}
                             <Grid item xs={12} container gap={3} direction='row' justifyContent='center'
                                 alignContent='center' textAlign='center' alignItems='center'  >
                                 {profile.touched &&
@@ -390,16 +429,6 @@ export default function Profile() {
                                         onSubmit={setUploadedImage} >
                                         {props => (
                                             <Form>
-                                                {/* {console.log(props, '::', props.values)} */}
-                                                {/* <TextField variant="outlined" select sx={{ mr: 2 }}
-                                                    onChange={(e) => { setOption(e.target.value) }} value={option} label='Display' >
-                                                    <MenuItem value='fill' >Fill</MenuItem>
-                                                    <MenuItem value='cover' >Cover</MenuItem>
-                                                    <MenuItem value='contain' >Contain</MenuItem>
-                                                    <MenuItem value='unset' >Unset</MenuItem>
-                                                    <MenuItem value='initial'  >Initial</MenuItem>
-                                                </TextField> */}
-
                                                 <Button color={props.errors.image ? 'error' : 'primary'} component="label" >
                                                     <input type="file" accept="image/*" onChange={e => {
                                                         props.setFieldValue('image', e.target.files[0]);
@@ -410,7 +439,7 @@ export default function Profile() {
                                                     Upload Your Avatar </Button>
                                                 <Typography color='error' variant="overline" m={2} >{props.errors.image}</Typography>
 
-                                                <Button type="submit" variant="contained" disabled={loading2}
+                                                <Button type="submit" variant="contained" disabled={loading2 || disabled}
                                                     color={props.errors.image && 'error'} > {props.values.image && props.isValid ?
                                                         <> <Iconify icon='ep:success-filled' /> Confirm </>
                                                         : 'Submit'}</Button>
@@ -461,17 +490,11 @@ export default function Profile() {
                                 alignItems="center" item xs={12} md={6} >
                                 {loading && <> <div className="loader" /> <Typography mb={0.5} variant="overline">
                                     Fetching Data </Typography> </>}
-
                                 {pic && show && !loading && <> <Typography mb={0.5} variant="overline"> Result </Typography>
                                     <div style={styles.card} >
-
                                         <ProfileImg src={pic} alt="Search Result" />
-
                                     </div> </>}
                             </Grid>
-
-
-
                         </Grid>
                     </div>
                 </Container>

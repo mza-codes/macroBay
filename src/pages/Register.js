@@ -93,7 +93,7 @@ export default function Register() {
 
             <Typography sx={{ color: 'text.secondary', mb: 5 }}>Free forever. No credit card needed.</Typography>
 
-            <AuthSocial />
+            {/* <AuthSocial /> */}
 
             <RegisterForm />
 
@@ -102,7 +102,7 @@ export default function Register() {
               <Link underline="always" color="text.primary" href="#">
                 Terms of Service
               </Link>
-              {''}and{''}
+              &nbsp;&&nbsp;
               <Link underline="always" color="text.primary" href="#">
                 Privacy Policy
               </Link>

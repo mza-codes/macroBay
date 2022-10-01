@@ -21,9 +21,13 @@ export default function RHFTextField({ name, ...other }) {
         <TextField
           {...field}
           fullWidth
+          focused
+          color={!error && 'success'}
+          variant='filled'
           value={typeof field.value === 'number' && field.value === 0 ? '' : field.value}
           error={!!error}
-          helperText={error?.message}
+          // helperText={error?.message}
+          helperText={error? <span className="errorInput"> {error.message} </span> : ''}
           {...other}
         />
       )}

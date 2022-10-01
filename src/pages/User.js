@@ -1,4 +1,4 @@
-import { filter } from 'lodash';
+import { filter, sample } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -26,17 +26,21 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
+// import USERLIST from '../_mock/user';
+import { useEffect } from 'react';
+import { db } from 'src/Contexts/firebaseConfig';
+import { collection, doc, getDocs } from 'firebase/firestore';
+import { faker } from '@faker-js/faker';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: '' },
+  { id: 'company', label: 'Location', alignRight: false },
+  { id: 'role', label: 'PinCode', alignRight: false },
+  { id: 'isVerified', label: 'Mobile', alignRight: false },
+  { id: 'status', label: 'E Mail', alignRight: false },
+  { id: 'docId', label: 'DocID', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -82,6 +86,45 @@ export function UserPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [USERLIST,SETUSERLIST] = useState([])
+
+  //  Fetch Firestore Users
+  const fetchUsers = async () => {
+    const data = await getDocs(collection(db, 'webusers'))
+    console.log('LOGGING DATA', data);
+    if (data.docs.length === 0) {
+      console.log('Error Occured Data array length == 0');
+      return false
+    }
+    const webusers = data.docs.map((doc) => {
+      return {
+        ...doc.data(),
+        docId: doc.id
+      }
+    })
+    const dbusers = webusers.map((user, index) => (console.log(user), {
+      id: user.id,
+      avatarUrl: user.avatar,
+      name: user.username,
+      company: user.location,
+      location: user.location,
+      mobile: user.phone,
+      email: user.email,
+      pincode: user.pincode,
+      docId: user.docId,
+      isVerified: faker.datatype.boolean(),
+      status: sample(['active', 'inactive']),
+      role: sample(['Customer', 'Administrator', 'Employee', 'Manager'])
+    }))
+    SETUSERLIST(dbusers)
+  }
+
+  useEffect(() => {
+    fetchUsers()
+    console.log('LOGGING DEFAULT USERLIST ', USERLIST);
+  }, [])
+  //  Close Fetch Firestore Users
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -141,7 +184,7 @@ export function UserPage() {
           </Typography>
           <Button component={RouterLink} to="#" >
             <div className="green">
-          <Iconify icon="akar-icons:circle-plus-fill" width={25} height={25}/></div></Button>
+              <Iconify icon="akar-icons:circle-plus-fill" width={25} height={25} /></div></Button>
         </Stack>
 
         <Card>
@@ -161,7 +204,7 @@ export function UserPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                    const { id, name, location, mobile, avatarUrl, pincode,email, docId } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
@@ -184,14 +227,12 @@ export function UserPage() {
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">{company}</TableCell>
-                        <TableCell align="left">{role}</TableCell>
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                        <TableCell align="left">
-                          <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell>
+                        <TableCell align="left">{location}</TableCell>
+                        <TableCell align="left">{pincode}</TableCell>
+                        <TableCell align="left">{mobile}</TableCell>
+                        <TableCell align="left">{email}</TableCell>
+                        <TableCell align="left">{docId}</TableCell>
+                        
 
                         <TableCell align="right">
                           <UserMoreMenu />

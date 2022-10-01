@@ -23,8 +23,8 @@ import { useNavigate } from 'react-router-dom';
 export default function LoginForm() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [errorMessage,setErrorMsg] = useState('')
-    const {firebase} = useContext(FirebaseContext)
+    const [errorMessage, setErrorMsg] = useState('')
+    const [loading,setLoading] = useState(false)
     const LoginSchema = Yup.object().shape({
         email: Yup.string().email('Email must be a valid email address').required('Email is required'),
         password: Yup.string().required('Password is required'),
@@ -47,11 +47,12 @@ export default function LoginForm() {
     } = methods;
 
     const onSubmit = async (props) => {
-        signInWithEmailAndPassword(auth,props.email, props.password).then((result) => {
+        setLoading(true)
+        signInWithEmailAndPassword(auth, props.email, props.password).then((result) => {
             console.log(result)
             navigate('/')
-          }).catch((err) => { setErrorMsg(err.code) })
-        
+        }).catch((err) => { setErrorMsg(err.code);setLoading(false) })
+
     };
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}  >
@@ -83,7 +84,7 @@ export default function LoginForm() {
                     Forgot password?
                 </Link>
             </Stack>
-            <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={loading}>
                 Login
             </LoadingButton>
         </FormProvider>
