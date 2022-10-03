@@ -17,6 +17,7 @@ import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "fir
 import { db, storage } from "src/Contexts/firebaseConfig";
 import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import EditProfile from "./ProfileEdit";
+import Compressor from "compressorjs";
 import { useRef } from "react";
 
 
@@ -80,6 +81,20 @@ export default function Profile() {
     })
     const navigate = useNavigate()
     const [disabled, setDisabled] = useState(false)
+
+    const compress = (image) => {
+        return new Promise(async (resolve, reject) => {
+            new Compressor(image, {
+                quality: 0.6,
+                strict: true,
+                maxWidth: 2000,
+                maxHeight: 2000,
+                success(result) {
+                    resolve(result)
+                }
+            })
+        })
+    }
 
     const AvatarImg = styled('img')({
         top: 0,
@@ -161,7 +176,7 @@ export default function Profile() {
         } else {
             console.log('falseState');
             setLoading(false)
-            setErr('Width And Height must be within 150-5000 Range !')
+            setErr('Width And Height must be within 30-500 Range !')
         }
 
     }
@@ -232,7 +247,7 @@ export default function Profile() {
         // }, 2000);
     }
 
-    const FILE_SIZE = 2001200;
+    const FILE_SIZE = 5001200;
     const SUPPORTED_FORMATS = [
         "image/jpg",
         "image/jpeg",
@@ -282,6 +297,7 @@ export default function Profile() {
     const setUploadedImage = async (values) => {
         setLoading2(true)
         setUploadErr(false)
+        const { image } = values
         if (user.photoURL && user.photoURL.includes('firebasestorage', 'microbay')) { // use profileKey validation
             console.log('includes');
             const delRef = ref(storage, user.photoURL)
@@ -290,13 +306,14 @@ export default function Profile() {
             console.log(metadata.fullPath);
             await deleteObject(ref(storage, metadata.fullPath))
         }
+        let compressed = await compress(image)
         console.log('Updating Profile')
-        const { image } = values
+        
         let dt = new Date().toISOString().toString().split(':', 6)
         let i = dt.length - 1
         let key = dt[i]
-        const imageRef = ref(storage, `/userAvatars/${image.name + key}`)
-        const snap = await uploadBytes(imageRef, image)
+        const imageRef = ref(storage, `/userAvatars/${user.displayName + key}`)
+        const snap = await uploadBytes(imageRef, compressed)
         console.log('SNAP Found', snap)
         const url = await getDownloadURL(snap.ref)
         console.log('GOT URL', url)

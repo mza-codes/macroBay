@@ -164,9 +164,11 @@ export default function ImageView() {
                                 Image Collection
                             </Typography>
                             <Box sx={{ textAlign: 'center' }}>
+                                {/* <Tooltip title='Get New images'>  */}
                                 <IconButton onClick={getImg} >
                                     <Iconify icon='fluent:arrow-sync-circle-24-filled' width={24} height={24} />
                                 </IconButton>
+                                {/* </Tooltip> */}
                             </Box>
                         </Grid>
                         <Grid container

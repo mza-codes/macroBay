@@ -4,6 +4,7 @@ import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import Blog from './pages/Blog';
+// import { UserPage } from './pages/Userv2';
 import { UserPage } from './pages/User';
 import Login from './pages/Login';
 import NotFound, { ErrorLogo } from './pages/Page404';
@@ -21,6 +22,7 @@ import Profile from './pages/Profile';
 import ImageView from './pages/ImageView';
 import ImgSingleView from './pages/ImgSingleView';
 import EditProfile from './pages/ProfileEdit';
+import MyPosts from './pages/MyPosts';
 
 // ----------------------------------------------------------------------
 
@@ -36,13 +38,14 @@ export default function Router() {
       admin = false
     }
   }
-  let usersRoute = <ErrorLogo />
+  let usersRoute = <ErrorLogo />, postsRoute = <ErrorLogo />
   let productRoute = <ErrorLogo />, resultRoute = <Result />, profileRoute
   let loginRoute = <Login />, createPost, signupRoute = <Register />
   user ? loginRoute = <UserError /> : loginRoute = <Login />
   user ? createPost = <CreatePost /> : createPost = <Navigate to='/login' />
   user ? signupRoute = <UserError /> : signupRoute = <Register />
   user ? profileRoute = <Profile /> : profileRoute = <Navigate to='/login' />
+  user ? postsRoute = <MyPosts/> : postsRoute = <Navigate to='/login' />
   admin ? usersRoute = <UserPage /> : usersRoute = <ErrorLogo />
   
   if (singleItem != null) {
@@ -67,8 +70,9 @@ export default function Router() {
         // { path: 'editProfile', element: editProfile },
       ],
     },
-    { path: 'images', element: <ImageView /> },
+    { path: 'myposts', element: postsRoute },
     { path: 'imagesingle', element: <ImgSingleView /> },
+    { path: 'images', element: <ImageView /> },
     {
       path: 'login',
       element: loginRoute,

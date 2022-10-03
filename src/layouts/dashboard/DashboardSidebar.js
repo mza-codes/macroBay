@@ -45,15 +45,16 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  const {user} = useContext(User)
+  const { user } = useContext(User)
   const isDesktop = useResponsive('up', 'lg');
   let userRole = ''
-  if(user){
-  if(user.email.includes("macrobay")){
-    userRole = 'Administrator'
-  }else{
-    userRole = 'Customer'
-  }}
+  if (user) {
+    if (user.email.includes("macrobay")) {
+      userRole = 'Administrator'
+    } else {
+      userRole = 'Customer'
+    }
+  }
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();

@@ -47,11 +47,11 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   const isMobile = useResponsive('down','sm')
   const isMd = useResponsive('down','md')
   // console.log('isDesktop',isDesktop,'isMobile',isMobile)
-  // console.log('isMd lo::',isMd);
+  // console.log('isMd lo::',isMd); , display: { lg: 'none' }
   return (
     <RootStyle>
       <ToolbarStyle>
-        <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
+        <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 

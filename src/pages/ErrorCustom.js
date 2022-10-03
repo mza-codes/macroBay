@@ -35,16 +35,15 @@ export default function ErrorCustom({ ...props }) {
         {props.title}
       </Typography>
 
-      <Typography color='error' >
+      <Typography color='error' gutterBottom >
         {props.message}
       </Typography>
 
-      <Box
+      {!props.unShow && <Box
         component="img"
         src="/static/illustrations/illustration_404_Red.svg"
         sx={{ height: 260, mx: 'auto', my: { xs: 5, sm: 10 } }}
-      />
-      {load && <CircularProgress sx={{ m: 3 }} color="foggy" /> }<br />
+      />}
       <Button to="/" color='error' size="large" variant="contained" component={RouterLink}>
         Go to Home
       </Button>

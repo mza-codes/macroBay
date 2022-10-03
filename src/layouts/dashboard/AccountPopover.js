@@ -25,9 +25,9 @@ const MENU_OPTIONS = [
     linkTo: '/dashboard/profile',
   },
   {
-    label: 'Settings',
+    label: 'My Products',
     icon: 'eva:settings-2-fill',
-    linkTo: '#',
+    linkTo: '/myposts',
   },
 ];
 

@@ -5,13 +5,14 @@ import { Alert, Container, IconButton, Stack, Tooltip, Typography } from '@mui/m
 import Page from '../components/Page';
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
 // mock
-import PRODUCTS from '../_mock/products';
 import { createContext } from 'react';
 import Iconify from 'src/components/Iconify';
 import useResponsive from 'src/hooks/useResponsive';
+import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 export const ProductsRefresh = createContext(null)
+
 export default function EcommerceShop() {
   const [openFilter, setOpenFilter] = useState(false);
   const [reload, setReload] = useState(false)
@@ -25,11 +26,12 @@ export default function EcommerceShop() {
     setOpenFilter(false);
   };
 
+
   return (
     <Page title="Sale">
       <Container>
         <Typography variant="h4" sx={{ mb: 2 }}>
-          Products
+          {'Products'}
         </Typography>
         {alert && <Alert variant='filled' severity='info' > Item Deleted Successfully! </Alert>}
         <ProductsRefresh.Provider value={{ reload, setReload, alert, setAlert }}>

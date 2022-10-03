@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { addDoc, collection, doc, setDoc } from "firebase/firestore"
+import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore"
 import Compressor from 'compressorjs'
 // form
 import { useForm } from 'react-hook-form';
@@ -16,17 +16,18 @@ import { useContext } from 'react';
 import { ImgView } from './CreatePost';
 import { Form, Formik, useField } from 'formik';
 import CustomInput, { CustomSelect } from 'src/components/hook-form/CustomInput';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from 'firebase/storage';
 import { User } from 'src/Contexts/UserContext';
 
 // ----------------------------------------------------------------------
 export const selectValues = ['Electronics', 'Gadgets', 'Buildings', 'Land', 'Apartments', 'Bikes', 'Cars', 'Laptop', 'Cycles', 'Desktop',
     'Wallpapers', 'Art', 'Scooters', 'Furnitures', 'Office', 'IT Equipments', 'Tools', 'Others']
-export default function PostForm({value}) {
+export default function EditProductForm({value}) {
     const navigate = useNavigate();
     const [success, setSuccess] = useState(false)
     // const { image, setImage, setImage2 } = useContext(ImgView)
-    const [ setImage, setImage2 ] = value
+    const [ setImage, setImage2, product ] = value
+    console.log('logging product',product);
     const { user } = useContext(User)
     const FILE_SIZE = 6001200;
     const SUPPORTED_FORMATS = [
@@ -65,13 +66,10 @@ export default function PostForm({value}) {
                     resolve(result)
                 }
             })
-
         })
     }
 
     const handlePost = async (values, actions) => {
-        const {setSubmitting} = actions
-        
         console.log('logging final VALUES', values)
         console.log('logging actions', actions)
         const { name, category, price, image, description } = values
@@ -79,21 +77,26 @@ export default function PostForm({value}) {
         setImage2(compressed)
         console.log(compressed, ':: logging compressed before');
         const imageRef = ref(storage, `/productImages/${name + image.name}`)
-
+        console.log(product.docId,product.url);
+        const delRef = ref(storage, product.url)
+        const metadata = await getMetadata(delRef)
+        await deleteObject(ref(storage, metadata.fullPath))
+        console.log('Deleted File');
+        const docRef = doc(db, 'products', product.docId)
         console.log('end line');
-        // setSubmitting(true)
         uploadBytes(imageRef, compressed).then((snap) => {
             console.log('upload Complete', snap);
             getDownloadURL(snap.ref).then((url) => {
                 console.log('fetched URL', url);
-                addDoc(collection(db, 'products'), {
+                updateDoc(docRef, {
                     name,
                     category,
                     price,
                     url,
                     userId: user.uid,
                     description,
-                    postDate: new Date().toLocaleString()
+                    editDate: new Date().toLocaleString(),
+
                 }).catch((err) => console.log(err))
             }).catch((err) => console.log(err))
         }).catch((err) => console.log(err))
@@ -113,7 +116,8 @@ export default function PostForm({value}) {
                 Item Listed for Sale <strong>Successfully</strong>
             </Alert>}
             <Formik
-                initialValues={{ name: '', category: '', price: '', image: undefined, description: '' }}
+                initialValues={{ name: product.name, category: product.category, price: product.price, image: undefined,
+                     description: product.description }}
                 validationSchema={formSchema}
                 onSubmit={handlePost}
             >

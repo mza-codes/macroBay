@@ -9,15 +9,13 @@ import { useContext } from 'react';
 import { ProductsRefresh } from 'src/pages/Products';
 import _ from 'lodash';
 
-// ----------------------------------------------------------------------// products,
-
 // ProductList.propTypes = {
 //   products: PropTypes.array.isRequired
 // };
 
 export default function ProductList({ ...other }) {
   const [products, setProducts] = useState([])
-  const {reload,setReload}= useContext(ProductsRefresh)
+  const { reload, setReload } = useContext(ProductsRefresh)
   async function fetchData() {
     var storedArray = sessionStorage.getItem("localProducts");
     if (storedArray == null) {
@@ -29,11 +27,13 @@ export default function ProductList({ ...other }) {
           id: product.id
         }
       })
+      console.log('DATA Fetched from Server,logging ARRAY::: ', localItems);
       let sorted = _.sortBy(localItems, 'postDate').reverse()
       sessionStorage.setItem("localProducts", JSON.stringify(sorted));
       const localData = sessionStorage.getItem("localProducts");
       let localProducts = JSON.parse(localData);
-      console.log('DATA Fetched from Server,logging STORED ARRAY::: ', localProducts);
+
+
       setProducts(localProducts)
     } else {
       let localProducts = JSON.parse(storedArray);
@@ -54,13 +54,24 @@ export default function ProductList({ ...other }) {
   }, [reload])
 
   // })
+  // return (
+  // <Grid container spacing={3} {...other}>
+  //   {products.map((product) => (
+  //     <Grid key={product.id} item xs={12} sm={6} md={3}>
+  //       <ShopProductCard product={product} />
+  //     </Grid>
+  //   ))}
+  // </Grid>
+  // );
   return (
-    <Grid container spacing={3} {...other}>
-      {products.map((product) => (
-        <Grid key={product.id} item xs={12} sm={6} md={3}>
-          <ShopProductCard product={product} />
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <Grid container spacing={3} {...other}>
+        {products.map((product) => (
+          <Grid key={product.id} item xs={12} sm={6} md={3}>
+            <ShopProductCard product={product} />
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 }
