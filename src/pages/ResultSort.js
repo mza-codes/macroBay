@@ -6,7 +6,7 @@ import { Menu, Button, MenuItem, Typography } from '@mui/material';
 import Iconify from 'src/components/Iconify';
 import * as _ from "lodash";
 import { useContext } from 'react';
-import { SortResult } from './Result';
+import { SortResult } from './ResultV2';
 
 // ----------------------------------------------------------------------
 
@@ -15,11 +15,9 @@ import { SortResult } from './Result';
 export default function ResultSort() {
   const [open, setOpen] = useState(null);
   let localProducts
-  const { products, setProducts, reload, setReload } = useContext(SortResult)
+  const { products, setProducts } = useContext(SortResult)
 
   const [label, setLabel] = useState('')
-  // const { setReload } = useContext(ProductsRefresh)
-  // var storedArray = products
   
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -66,8 +64,8 @@ export default function ResultSort() {
       setProducts(sorted)
       setOpen(null)
       // setReload(true)
-      state= null
-      props = null
+      // state= null
+      // props = null
     }
 
   }

@@ -1,14 +1,14 @@
 import { Divider, Grid, IconButton, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { ref } from "firebase/storage";
+import { getMetadata, ref } from "firebase/storage";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/Iconify";
 import Page from "src/components/Page";
-import { db } from "src/Contexts/firebaseConfig";
+import { db, storage } from "src/Contexts/firebaseConfig";
 import { User } from "src/Contexts/UserContext";
 import LogoOnlyLayout from "src/layouts/LogoOnlyLayout";
 import EditProductForm from "./EditProductForm";
@@ -19,6 +19,7 @@ import MyPostsCard from "./MyPostsCard";
 export default function MyPosts() {
     const [userProducts, setUserProducts] = useState([])
     const [editProduct, setEditProduct] = useState(null)
+    const [metadata, setMetadata] = useState()
     const [load, setLoad] = useState(false)
     const [error, setError] = useState(false)
     const [image, setImage] = useState(null)
@@ -73,9 +74,12 @@ export default function MyPosts() {
 
     }, [])
 
-    const modifyProduct = (product) => {
+    const modifyProduct = async (product) => {
+        setEditProduct(null)
         setLoading(true)
-        console.log(product)
+        const imgRef = ref(storage, product.url)
+        let metadata = await getMetadata(imgRef)
+        setMetadata(metadata)
         setEditProduct(product)
         setImage2(product.url)
         setTimeout(() => {
@@ -83,7 +87,7 @@ export default function MyPosts() {
             const anchor = document.querySelector('#edit')
             anchor.scrollIntoView({ behavior: 'smooth', block: 'center' })
             setLoading(false)
-        }, 2500);
+        }, 500);
 
 
 
@@ -107,9 +111,10 @@ export default function MyPosts() {
                         {userProducts.map((product) => {
                             return (
                                 <Grid key={product.id} item xs={12} sm={6} md={4} lg={3} >
-                                    <div style={styles.card} >
+                                    <div key={product.id} style={styles.card} >
                                         <MyPostsCard key={product.id} product={product} />
-                                        <div style={styles.overlay}><IconButton onClick={() => { modifyProduct(product) }} >
+                                        <div key={product.id} style={styles.overlay}><IconButton
+                                            onClick={() => { modifyProduct(product) }} >
                                             {load ? <div className="loaderSmall"></div> : <div className="textBlack">
                                                 <Iconify icon='bxs:edit' width={25} height={25} /></div>}
                                         </IconButton>
@@ -121,7 +126,7 @@ export default function MyPosts() {
                     </Grid>
 
                     {editProduct && <>
-                        <Grid item xs={12} pt={2} >
+                        <Grid id='edit' item xs={12} pt={2} >
                             <Divider orientation="horizontal" flexItem />
                             <Typography variant="h3" pt={2} >
                                 Edit Post Details
@@ -130,11 +135,14 @@ export default function MyPosts() {
                         <Grid item xs={12} md={6} >
                             <EditProductForm value={[setImage, setImage2, editProduct]} />
                         </Grid>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} lg={6}>
                             <img className="imageView" src={image2} srcSet={image ? URL.createObjectURL(image) : ''} />
+                            {!image ? <Typography variant='overline' > Image Name: {metadata.name.slice(0, 35) + '...'} <br />
+                                File Type: {metadata.contentType} <br /> File Size: {(metadata.size / 1e+6)} MB</Typography>
+                                : <Typography variant='overline' > Image Name: {image.name.slice(0, 35) + '...'} <br />
+                                    File Type: {image.type} <br /> File Size: {(image.size / 1e+6)} MB</Typography>}
                         </Grid>
                     </>}
-                    <Grid id='edit'> </Grid>
                 </Grid>
             </Container>
         </Page>

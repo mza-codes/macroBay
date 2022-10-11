@@ -2,7 +2,8 @@ import { useRef, useState } from 'react';
 import * as Yup from 'yup'
 // material
 import { styled, alpha } from '@mui/material/styles';
-import { Input, Slide, Button, IconButton, InputAdornment, ClickAwayListener, Select, MenuItem, Badge, Box, Typography, Tooltip, Divider, List, ListSubheader } from '@mui/material';
+import { Input, Slide, Button, IconButton, InputAdornment, ClickAwayListener, Select, MenuItem, Badge, Box, 
+  Typography, Tooltip, Divider, List, ListSubheader } from '@mui/material';
 // component
 import Iconify from '../../components/Iconify';
 import { useNavigate } from 'react-router-dom';
@@ -41,7 +42,7 @@ export default function SearchbarPopOver() {
   };
 
   const schema = Yup.object().shape({
-    query: Yup.string().min(3, 'Query too short').max(20, 'Query too High').required('Value not Found'),
+    query: Yup.string().min(1, 'Query too short').max(20, 'Query too High'),
     category: Yup.string()
   })
 

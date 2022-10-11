@@ -17,7 +17,7 @@ import { User } from './Contexts/UserContext';
 import { SingleProduct } from './Contexts/ProductContext';
 import ProductView from './pages/ProductView';
 import CreatePost from './pages/CreatePost';
-import Result from './pages/Result';
+import Result from './pages/ResultV2';
 import Profile from './pages/Profile';
 import ImageView from './pages/ImageView';
 import ImgSingleView from './pages/ImgSingleView';

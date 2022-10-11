@@ -27,7 +27,6 @@ export default function EditProductForm({value}) {
     const [success, setSuccess] = useState(false)
     // const { image, setImage, setImage2 } = useContext(ImgView)
     const [ setImage, setImage2, product ] = value
-    console.log('logging product',product);
     const { user } = useContext(User)
     const FILE_SIZE = 6001200;
     const SUPPORTED_FORMATS = [
@@ -126,7 +125,7 @@ export default function EditProductForm({value}) {
                     <Form >
                         {/* {console.log(props)} */}
                         <div style={{ float: 'right' }}> <Tooltip title="Clear Fields">
-                            <IconButton color="primary" onClick={() => { props.handleReset() }}>
+                            <IconButton color="primary" onClick={() => { props.handleReset();setImage(null) }}>
                                 <Iconify icon="pajamas:clear-all" width={20} height={20} />
                             </IconButton>
                         </Tooltip></div>
