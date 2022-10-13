@@ -339,6 +339,8 @@ export default function Profile() {
         padding: theme.spacing(12, 0),
     }));
 
+    const ErrLog = <Iconify icon='bxs:message-square-error' color='red' width={20} height={20} />
+
     return (
         <div>
             <Page title='Profile'>
@@ -389,11 +391,11 @@ export default function Profile() {
                                 {user && <> <Typography m={0.2} variant="subtitle1"> Name: {user.displayName} </Typography>
                                     <Typography m={0.2} variant="subtitle2"> E-Mail: {user.email} </Typography>
 
-                                    {userData && <> <Typography m={0.2} variant="subtitle2"> Phone: {userData.phone}</Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Alt Mobile: {userData.altMobile} </Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Pin Code: {userData.pincode} </Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Location: {userData.location} </Typography> </>}
-                                    <Typography m={0.2} variant="subtitle2"> Join Date: 19/08/2022 </Typography>
+                                    {userData && <> <Typography m={0.2} variant="subtitle2"> Phone: {userData.phone ||ErrLog }</Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Alt Mobile: {userData.altMobile ||ErrLog } </Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Pin Code: {userData.pincode ||ErrLog } </Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Location: {userData.location ||ErrLog } </Typography> </>}
+                                    {/* {<Typography m={0.2} variant="subtitle2"> Join Date: {userData.joinDate || ErrLog } </Typography>} */}
                                     <Tooltip title='This UserID is generated on account creation & rarely useful to User'>
                                         <Typography m={0.2} variant="subtitle2"> UserID: {user.uid}</Typography>
                                     </Tooltip> </>}

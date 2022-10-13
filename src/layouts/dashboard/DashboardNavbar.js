@@ -51,9 +51,9 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   return (
     <RootStyle>
       <ToolbarStyle>
-        <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
+        {!isDesktop && <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
           <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
+        </IconButton>}
 
         {!isMobile && !isMd && <Searchbar /> }
         {/* {} */}

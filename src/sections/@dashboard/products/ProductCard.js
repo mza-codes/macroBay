@@ -8,7 +8,6 @@ import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/Label';
 import { ColorPreview } from '../../../components/color-utils';
-import ProductView from '../../../pages/ProductView';
 import { SingleProduct } from 'src/Contexts/ProductContext';
 import { useContext } from 'react';
 import { User } from 'src/Contexts/UserContext';

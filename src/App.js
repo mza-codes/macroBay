@@ -15,13 +15,13 @@ import { User } from './Contexts/UserContext';
 // ----------------------------------------------------------------------
 
 export default function App() {
-  const {user,setUser} = useContext(User)
-  useEffect(()=>{
-    onAuthStateChanged(auth,(user)=>{
+  const { user, setUser } = useContext(User)
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
       setUser(user)
       console.log(user);
     })
-  },[])
+  }, [])
   return (
     <ThemeProvider>
       <ScrollToTop />

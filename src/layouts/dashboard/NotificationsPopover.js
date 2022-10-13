@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
 import { faker } from '@faker-js/faker';
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext, useEffect } from 'react';
 // @mui
 import {
   Box,
@@ -25,6 +25,9 @@ import { fToNow } from '../../utils/formatTime';
 import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 import MenuPopover from '../../components/MenuPopover';
+import { User } from 'src/Contexts/UserContext';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from 'src/Contexts/firebaseConfig';
 
 // ----------------------------------------------------------------------
 
@@ -79,11 +82,13 @@ const NOTIFICATIONS = [
 export default function NotificationsPopover() {
   const anchorRef = useRef(null);
 
-  const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  const [notifications, setNotifications] = useState([]);
 
   const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
 
   const [open, setOpen] = useState(null);
+
+  const { user } = useContext(User)
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -101,6 +106,60 @@ export default function NotificationsPopover() {
       }))
     );
   };
+
+  const validate = (obj, validations) =>
+    // validations.every(key => ![undefined, null].includes(key.split('.').reduce((acc, cur) => acc?.[cur], obj)));
+    validations.every(key => !['', undefined, null].includes(key.split('.').reduce((acc, cur) => acc?.[cur], obj)));
+
+  const validations = [
+    'email',
+    'id',
+    'avatar',
+    'location',
+    'phone',
+    'pincode',
+    'profileKey',
+    'username'
+  ];
+
+  const fetchUserData = async () => {
+    let docData, docID
+    const q = query(collection(db, 'webusers'), where('id', '==', user.uid))
+    await getDocs(q).then((result) => {
+      if (result.docs.length === 0) {
+        console.log('if true entered docs length ===0 No User Document found');
+        return false
+      }
+      result.forEach((doc) => {
+        docID = doc.id
+        docData = doc.data()
+      })
+      const dat = validate(docData, validations)
+      console.log('data logg', dat);
+      if (dat === false) {
+        const notif = []
+        let v = Math.floor((Math.random() * 24) + 1)
+        notif.push({
+          id: v.toString(),
+          title: 'Undefined values found in UserProfile',
+          description: `One or More fields in UserProfile Contains Undefined/Empty 
+          Values. Please Update it from User Profile Section`,
+          avatar: null,
+          type: 'mail',
+          genre:'error',
+          // createdAt: new Date().toLocaleTimeString(),
+          createdAt: sub(new Date(), { hours: 0, minutes: 0 }),
+          isUnRead: true,
+        })
+        setNotifications(notif)
+      }
+
+    }).catch((err) => { console.log(err); })
+  }
+
+  useEffect(() => {
+    user && fetchUserData()
+  }, [user])
 
   return (
     <>
@@ -143,18 +202,18 @@ export default function NotificationsPopover() {
         <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
           <List
             disablePadding
-            subheader={
-              <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                New
-              </ListSubheader>
-            }
+            // subheader={
+            //   <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
+            //     New
+            //   </ListSubheader>
+            // }
           >
-            {notifications.slice(0, 2).map((notification) => (
+            {notifications.map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>
 
-          <List
+          {/* <List
             disablePadding
             subheader={
               <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
@@ -165,7 +224,7 @@ export default function NotificationsPopover() {
             {notifications.slice(2, 5).map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
-          </List>
+          </List> */}
         </Scrollbar>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -236,10 +295,10 @@ function NotificationItem({ notification }) {
 
 function renderContent(notification) {
   const title = (
-    <Typography variant="subtitle2">
+    <Typography variant="subtitle2" color={notification.genre} >
       {notification.title}
       <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {noCase(notification.description)}
+        &nbsp; {notification.description}
       </Typography>
     </Typography>
   );
