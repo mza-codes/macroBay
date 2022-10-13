@@ -36,7 +36,7 @@ export default function ErrorCustom({ ...props }) {
       </Typography>
 
       <Typography color='error' gutterBottom >
-        <strong> {props.message} </strong>
+        {props.message} 
       </Typography>
 
       {!props.unShow && <Box

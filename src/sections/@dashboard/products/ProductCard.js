@@ -40,7 +40,7 @@ export default function ShopProductCard({ product }) {
   // const { name, cover, price, colors, status, priceSale } = product;
   const { setSingleItem } = useContext(SingleProduct)
   const { user } = useContext(User)
-  const { setReload,setAlert } = useContext(ProductsRefresh)
+  const { setReload, setAlert } = useContext(ProductsRefresh)
   let admin = false
   if (user) {
     if (user.email.includes("macrobay")) {
@@ -71,10 +71,10 @@ export default function ShopProductCard({ product }) {
       setAlert(true)
       setTimeout(() => {
         setAlert(false);
-    }, 5000);
+      }, 5000);
       sessionStorage.removeItem("localProducts")
       setReload(true)
-      
+
     } catch (err) {
       console.log('ERROR OCCURED', err);
     }
@@ -106,7 +106,7 @@ export default function ShopProductCard({ product }) {
   }
   return (
     <Card className='pointer' >
-      <Box sx={{ pt: '100%', position: 'relative' }} onClick={renderProduct}>
+      <Box sx={{ pt: '100%', position: 'relative' }} onClick={() => route(`/dashboard/viewproduct/${id}`)}>
         {status && (
           <Label
             variant="filled"
@@ -126,7 +126,9 @@ export default function ShopProductCard({ product }) {
       </Box>
 
       <Stack spacing={1} sx={{ p: 3 }}>
-        <Link to="/viewproduct" color="inherit" underline="hover" component={RouterLink}>
+        <Link to={'/dashboard/viewproduct/' + id}
+          // to={`/dashboard/viewproduct/${id}`}
+          color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
             {name}
           </Typography>

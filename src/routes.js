@@ -15,7 +15,7 @@ import UserError from './pages/UserError';
 import { useContext, useEffect } from 'react';
 import { User } from './Contexts/UserContext';
 import { SingleProduct } from './Contexts/ProductContext';
-import ProductView from './pages/ProductView';
+import ProductView from './pages/ProductViewV2';
 import CreatePost from './pages/CreatePost';
 import Result from './pages/ResultV2';
 import Profile from './pages/Profile';
@@ -48,11 +48,11 @@ export default function Router() {
   user ? postsRoute = <MyPosts/> : postsRoute = <Navigate to='/login' />
   admin ? usersRoute = <UserPage /> : usersRoute = <ErrorLogo />
   
-  if (singleItem != null) {
-    productRoute = <ProductView />
-  } else {
-    productRoute = <ErrorLogo />
-  }
+  // if (singleItem != null) {
+  //   productRoute = <ProductView />
+  // } else {
+  //   productRoute = <ErrorLogo />
+  // }
 
   return useRoutes([
     {
@@ -63,7 +63,7 @@ export default function Router() {
         { path: 'user', element: usersRoute },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
-        { path: 'viewproduct', element: productRoute },
+        { path: 'viewproduct/:id', element: <ProductView /> },
         { path: 'create', element: createPost },
         { path: 'result', element: resultRoute },
         { path: 'profile', element: profileRoute },

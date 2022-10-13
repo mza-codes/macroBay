@@ -155,8 +155,11 @@ export default function Result() {
                             <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                 {location.state.params ? `for "${location.state.params}"` : ''} from "{location.state.category}"
                             </Typography> </> : <> <ErrorCustom title='No Results Found'
-                                message={`Uh' There is no matching results for your query
-                         "${location.state.params ? location.state.params : location.state.category}"`} /> </>}
+                            message={<> Uh' There is no matching results for your query <strong>
+                            "{location.state.params ? location.state.params : location.state.category}" </strong> </>}
+                        //         message={`Uh' There is no matching results for your query
+                        //  "${location.state.params ? location.state.params : location.state.category}"`} 
+                         /> </>}
 
                         <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 1 }}>
                             <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>

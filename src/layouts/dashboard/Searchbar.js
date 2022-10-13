@@ -40,7 +40,6 @@ export default function Searchbar() {
   const [isOpen, setOpen] = useState(false);
   // const [query, setQuery] = useState('')
   // const [category, setCategory] = useState('')
-  const [errView, setErrView] = useState(true)
 
 
   const navigate = useNavigate()
@@ -71,16 +70,13 @@ export default function Searchbar() {
   const handleSearch = (values, actions) => {
     const { query, category } = values
     console.log('data onSubmit', values);
-    if (errView === false) {
-      navigate('/dashboard/result', { state: { category, params: query } })
-      setOpen(false)
-    } else {
-      console.log('Search Value error');
-    }
+    navigate('/dashboard/result', { state: { category, params: query } })
+    setOpen(false)
+
 
   }
   const schema = Yup.object().shape({
-    query: Yup.string().min(3, 'Product Name too short').max(20, 'Invalid Product Name').required('Required Field'),
+    query: Yup.string().min(2, 'Query too short').max(20, 'Query Character limit reached'),
     category: Yup.string()
   })
 
@@ -97,12 +93,12 @@ export default function Searchbar() {
 
         <SearchbarStyle>
           <Formik initialValues={{ query: '', category: 'a' }}
-            validationSchema={schema} 
+            validationSchema={schema}
             onSubmit={handleSearch} >
             {props => (
-              <Form>{console.log('LOGGIN MAIN PROPS', props, 'VALUES ===', props.values)}
+              <Form>
                 {/* <ClickAwayListener onClickAway={handleClose}> */}
-                  <Input
+                <Input
                   autoFocus
                   // fullWidth
                   disableUnderline
@@ -123,26 +119,26 @@ export default function Searchbar() {
                 {/* </ClickAwayListener> */}
                 <Select
                   // autoFocus
-                  sx={{ mr: 2,height: 25 }}
+                  sx={{ mr: 2, height: 25 }}
                   variant="outlined"
                   name='category'
                   // value={category}
                   value={props.values.category}
                   onChange={(e) => { props.setFieldValue('category', e.target.value) }}
-                > 
-                <MenuItem value='a' > All </MenuItem>
+                >
+                  <MenuItem value='a' > All </MenuItem>
                   {selections.map((option) => {
                     return (
                       <MenuItem key={option} value={option}> {option} </MenuItem>
                     )
                   })}
                 </Select>
-                <Button disabled={!props.isValid} type='submit' variant="contained" >
-                  Search
-                </Button>
+                <Button 
+                // disabled={!props.values.query.length != 0 || !props.values.category.length != 0}
+                  type='submit' variant="contained" > Search </Button>
               </Form>)}
           </Formik>
-          <Button color='error' onClick={handleClose} sx={{mx:1}} > <Iconify icon='eva:close-circle-fill' height={25} width={25} /> </Button>
+          <Button color='error' onClick={handleClose} sx={{ mx: 1 }} > <Iconify icon='eva:close-circle-fill' height={25} width={25} /> </Button>
         </SearchbarStyle>
 
       </Slide>

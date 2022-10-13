@@ -40,8 +40,7 @@ export default function ResultCard({ product }) {
   const { name, category, postDate, price, url, id } = product
   const route = useNavigate()
   function renderProduct() {
-    setSingleItem(product)
-    route('/dashboard/viewproduct')
+    route(`/dashboard/viewproduct/${id}`)
   }
   return (
     <Card className='pointer' >
@@ -51,9 +50,9 @@ export default function ResultCard({ product }) {
       </Box>
 
       <Stack spacing={1} sx={{ p: 3 }}>
-          <Typography onClick={renderProduct} variant="subtitle2" noWrap>
-            {name}
-          </Typography>
+        <Typography onClick={renderProduct} variant="subtitle2" noWrap>
+          {name}
+        </Typography>
         <Typography variant="subtitle2" noWrap>
           {category}
         </Typography>
@@ -63,7 +62,7 @@ export default function ResultCard({ product }) {
             &nbsp;
             ₹ {price}
           </Typography>
-          
+
         </Stack>
         <span style={{ fontSize: '0.7rem' }}>{postDate.slice(0, 10)}</span>
       </Stack>
