@@ -1,14 +1,10 @@
 import PropTypes from 'prop-types';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-// material
-import { Box, Card, Link, Typography, Stack, Button, Alert } from '@mui/material';
+import { Box, Card, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useContext } from 'react';
 import { User } from 'src/Contexts/UserContext';
 import { SingleProduct } from 'src/Contexts/ProductContext';
-
-
-// ----------------------------------------------------------------------
 
 const ProductImgStyle = styled('img')({
     top: 0,
@@ -18,14 +14,11 @@ const ProductImgStyle = styled('img')({
     position: 'absolute',
 });
 
-// ----------------------------------------------------------------------
-
 MyPostsCard.propTypes = {
     product: PropTypes.object,
 };
 
 export default function MyPostsCard({ product }) {
-    const { setSingleItem } = useContext(SingleProduct)
     const { user } = useContext(User)
     let admin = false
     if (user) {
@@ -36,15 +29,15 @@ export default function MyPostsCard({ product }) {
         }
     }
     const { name, category, postDate, price, url, id } = product
-    const route = useNavigate()
-    function renderProduct() {
-        setSingleItem(product)
-        route('/dashboard/viewproduct')
-    }
+    const route = useNavigate();
+
+    const renderProduct = () => {
+        console.log("nothing to do ");
+    };
+
     return (
         <Card className='pointer' >
             <Box sx={{ pt: '100%', position: 'relative' }} onClick={renderProduct}>
-
                 <ProductImgStyle alt={name} src={url} />
             </Box>
 

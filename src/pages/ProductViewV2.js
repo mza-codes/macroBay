@@ -1,83 +1,56 @@
 import { useContext, useState } from "react";
-import { SingleProduct } from "src/Contexts/ProductContext";
-// @mui
-import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography, Card, Button, Stack, Box, Avatar } from '@mui/material';
-// components
+import { useProductContext } from "src/Contexts/ProductContext";
+import { Grid, Container, Typography, Box, Avatar } from '@mui/material';
 import Page from '../components/Page';
-import Iconify from '../components/Iconify';
-import styled from "@emotion/styled";
 import { User } from "src/Contexts/UserContext";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { collection,getDocs, query, where } from "firebase/firestore";
 import { db } from "src/Contexts/firebaseConfig";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import ErrorCustom from "./ErrorCustom";
-// ----------------------------------------------------------------------
-
 
 export default function ProductView() {
-    const [product, setProduct] = useState()
-    // {
-    //     name: 'logname',
-    //     postDate: 'logdate',
-    //     category: 'logccate',
-    //     description: 'loggdesc',
-    //     price: 562,
-
-    // }
+    const { saleItems } = useProductContext();
+    const [product, setProduct] = useState({});
     const [notFound, setNotFound] = useState()
     const [loading, setLoading] = useState(true)
-    const params = useParams()
-    const proId = params.id
-    console.log('LOGING PRODUCTID', proId);
-    const theme = useTheme();
-    // const { singleItem } = useContext(SingleProduct)
+    const params = useParams();
+    const proId = params.id;
     const { user } = useContext(User)
     const [seller, setSeller] = useState(null)
-    let title;
+
     const fetchProduct = async () => {
-
-        // const docRef = query(collection(db, 'products').doc(db, proId))
-        const docRef = collection(db, 'products')
-        const result = await getDoc(doc(db, 'products', proId))
-        if (result.exists()) {
-            let data = result.data()
-            user && await getSeller(data.userId)
-            setNotFound(false)
-            setLoading(false)
-            setProduct(result.data())
-
-            console.log('complete');
-
+        const data = saleItems.filter((product) => product.id === proId);
+        console.log("filtered", data);
+        if (data.length >= 1) {
+            setProduct(data[0]);
+            setNotFound(false);
+            setLoading(false);
+            user && await getSeller(data[0]?.userId);
         } else {
-            setNotFound(true)
-            setLoading(false)
-        }
-        console.log(result.exists());
-        console.log(result.data());
-    }
+            setNotFound(true);
+            setLoading(false);
+        };
+    };
 
     async function getSeller(userId) {
-        // const { userId } = product
-        console.log('userId', userId);
         const q = query(collection(db, 'webusers'), where('id', '==', userId))
         try {
             getDocs(q).then((result) => {
                 result.forEach((doc) => {
                     console.log(doc.data());
                     setSeller(doc.data())
-                })
-            })
+                });
+            });
         } catch (error) {
             console.log(error.message);
-            console.log(error);
-        }
-    }
+            console.log("Error Fetching Seller from Firestore",error);
+        };
+    };
+
     useEffect(() => {
-        fetchProduct()
-    }, [])
-    // `${product.name} Details`
+        fetchProduct();
+    }, []);
 
     return (
         <Page title={product?.name + 'Details'}>
@@ -91,18 +64,16 @@ export default function ProductView() {
                             sx={{ alignItems: { xs: 'flex-start' }, justifyContent: { xs: 'flex-start' } }} >
                             {!loading && <Box flexDirection='column' mt={2} >
                                 <Typography variant='h4'>{product.name}</Typography>
-                                {/* <h3> {product.name}</h3> */}
+
                                 <h4>Listed Under: {product.category}</h4>
-                                {/* <Typography variant='h5'>{product.category}</Typography> */}
+
                                 <h4>Listed on: {product.postDate}</h4>
-                                {/* <Typography variant='h5'>{product.postDate}</Typography> */}
+
                                 <h4>Listed Price: </h4>
                                 <Typography variant='h4'>₹ {product.price}/-</Typography>
-                                {/* <h2>₹ {product.price}/-</h2> */}
-                                {/* <Typography variant='h4'>{product.name}</Typography> */}
+
                                 <h6>*Listed price can be negotiaited with Seller</h6>
                                 <Typography variant='subtitle2'>{product.description}</Typography>
-                                {/* <h5 >Description: {product.description}</h5> */}
 
                                 <div style={{ paddingTop: '0.5rem' }}></div>
                                 {user && <><h3 >Seller Details:</h3>

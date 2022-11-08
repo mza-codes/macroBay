@@ -3,29 +3,13 @@ import { useState } from 'react';
 import { Menu, Button, MenuItem, Typography } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
-import { useContext } from 'react';
-import { ProductsRefresh } from 'src/pages/Products';
-import { useEffect } from 'react';
 import * as _ from "lodash";
-
-// ----------------------------------------------------------------------
-
-
+import { useProductContext } from 'src/Contexts/ProductContext';
 
 export default function ShopProductSort() {
+  const { saleItems, setSaleItems } = useProductContext();
   const [open, setOpen] = useState(null);
-  let localProducts
-  const [label, setLabel] = useState('')
-  const { setReload } = useContext(ProductsRefresh)
-  var storedArray = sessionStorage.getItem("localProducts");
-
-  const handleOpen = (event) => {
-    setOpen(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setOpen(null);
-  };
+  const [label, setLabel] = useState('');
 
   const SORT_BY_OPTIONS = [
     { value: 'name', state: '-', label: 'Featured' },
@@ -34,7 +18,7 @@ export default function ShopProductSort() {
     { value: 'price', state: 'priceHigh', label: 'Price: High-Low' }
   ];
 
-  // const handleSort = (props, state) => {
+  // const handleSortv1 = (props, state) => {
   //   console.log(props, state);
   //   let sorted
   //   if (storedArray == null) {
@@ -57,35 +41,31 @@ export default function ShopProductSort() {
   //     setOpen(null)
   //   }
   // }
+
   const handleSort = (field, arg) => {
     let sorted
     console.log(field, arg);
-    if (storedArray == null) {
-      console.log('storedArray NULL Found FIX THIS');
+
+    if (arg === 'priceHigh') {
+      sorted = _.sortBy(saleItems, field).reverse();
+      setSaleItems(sorted);
+
+    } else if (field === 'postDate') {
+      sorted = _.sortBy(saleItems, field).reverse();
+      setSaleItems(sorted);
     } else {
-      localProducts = JSON.parse(storedArray)
-      if (arg === 'priceHigh') {
-        sorted = _.sortBy(localProducts, field).reverse()
-      } else if (field === 'postDate') {
-        sorted = _.sortBy(localProducts, field).reverse()
-      } else {
-        sorted = _.sortBy(localProducts, field)
-      }
-      sessionStorage.setItem("localProducts", JSON.stringify(sorted));
-      setReload(true)
-      setOpen(null)
+      sorted = _.sortBy(saleItems, field);
+      setSaleItems(sorted);
+    };
+    setOpen(null);
+  };
 
-    }
-  }
-  // useEffect(() => {
-
-  // }, [handleSort])
   return (
     <>
       <Button
         color="inherit"
         disableRipple
-        onClick={handleOpen}
+        onClick={e=>setOpen(e.currentTarget)}
         endIcon={<Iconify icon={open ? 'eva:chevron-up-fill' : 'eva:chevron-down-fill'} />}
       >
         Sort By:&nbsp;
@@ -97,15 +77,13 @@ export default function ShopProductSort() {
         keepMounted
         anchorEl={open}
         open={Boolean(open)}
-        onClose={handleClose}
+        onClose={e=>setOpen(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         {SORT_BY_OPTIONS.map((option) => (
           <MenuItem
             key={option.label}
-            // selected={!option.value===''}
-            // onChange={() => }
             value={option.value}
             onClick={() => { setLabel(option.label); handleSort(option.value, option.state) }}
             sx={{ typography: 'body2' }}

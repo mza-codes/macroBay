@@ -20,17 +20,17 @@ import ProductContext from './Contexts/ProductContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-  <RootFirebase>
-    <UserContext>
-      <ProductContext>
+  // <RootFirebase>
+    <ProductContext>
+      <UserContext>
         <HelmetProvider>
           <BrowserRouter>
             <App />
           </BrowserRouter>
         </HelmetProvider>
-      </ProductContext>
-    </UserContext>
-  </RootFirebase>
+      </UserContext>
+    </ProductContext>
+  /* </RootFirebase> */
 );
 
 // If you want to enable client cache, register instead.

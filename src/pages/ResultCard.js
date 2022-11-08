@@ -27,7 +27,6 @@ ResultCard.propTypes = {
 };
 
 export default function ResultCard({ product }) {
-  const { setSingleItem } = useContext(SingleProduct)
   const { user } = useContext(User)
   let admin = false
   if (user) {
