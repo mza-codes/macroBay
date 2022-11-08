@@ -107,10 +107,6 @@ export default function NotificationsPopover() {
     );
   };
 
-  const validate = (obj, validations) =>
-    // validations.every(key => ![undefined, null].includes(key.split('.').reduce((acc, cur) => acc?.[cur], obj)));
-    validations.every(key => !['', undefined, null].includes(key.split('.').reduce((acc, cur) => acc?.[cur], obj)));
-
   const validations = [
     'email',
     'id',
@@ -121,6 +117,10 @@ export default function NotificationsPopover() {
     'profileKey',
     'username'
   ];
+
+  const validate = (obj, validations) =>
+    // validations.every(key => ![undefined, null].includes(key.split('.').reduce((acc, cur) => acc?.[cur], obj)));
+    validations.every(key => !['', undefined, null].includes(key.split('.').reduce((acc, cur) => acc?.[cur], obj)));
 
   const fetchUserData = async () => {
     let docData, docID
@@ -138,7 +138,7 @@ export default function NotificationsPopover() {
       console.log('data logg', dat);
       if (dat === false) {
         const notif = []
-        let v = Math.floor((Math.random() * 24) + 1)
+        let v = Math.floor((Math.random() * 24) + 1);
         notif.push({
           id: v.toString(),
           title: 'Undefined values found in UserProfile',
@@ -146,20 +146,36 @@ export default function NotificationsPopover() {
           Values. Please Update it from User Profile Section`,
           avatar: null,
           type: 'mail',
-          genre:'error',
-          // createdAt: new Date().toLocaleTimeString(),
-          createdAt: sub(new Date(), { hours: 0, minutes: 0 }),
+          genre: 'error',
+          createdAt: sub(new Date(), { hours: 1, minutes: 1 }),
           isUnRead: true,
         })
-        setNotifications(notif)
-      }
+        setNotifications((current) => ([...current, notif[0]]));
+      };
 
     }).catch((err) => { console.log(err); })
   }
 
+  const renderGuestNotification = () => {
+    const notif = [];
+    let v = Math.floor((Math.random() * 24) + 1);
+    notif.push({
+      id: v.toString(),
+      title: `Welcome to MacroBay! ${" "}`,
+      description: `How about creating an account and start right away ?`,
+      avatar: null,
+      type: 'chat_message',
+      genre: 'primary',
+      createdAt: sub(new Date(), { hours: 0, minutes: 1 }),
+      isUnRead: true,
+    });
+    setNotifications((curr) => ([...curr, notif[0]]));
+  }
+
   useEffect(() => {
-    user && fetchUserData()
-  }, [user])
+    !user && renderGuestNotification();
+    user && fetchUserData();
+  }, [user]);
 
   return (
     <>
@@ -202,11 +218,11 @@ export default function NotificationsPopover() {
         <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
           <List
             disablePadding
-            // subheader={
-            //   <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-            //     New
-            //   </ListSubheader>
-            // }
+          // subheader={
+          //   <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
+          //     New
+          //   </ListSubheader>
+          // }
           >
             {notifications.map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
@@ -296,9 +312,9 @@ function NotificationItem({ notification }) {
 function renderContent(notification) {
   const title = (
     <Typography variant="subtitle2" color={notification.genre} >
-      {notification.title}
+      {notification.title} <br />
       <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {notification.description}
+        {notification.description}
       </Typography>
     </Typography>
   );

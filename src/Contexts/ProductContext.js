@@ -1,15 +1,17 @@
-import react, { createContext } from 'react'
+import { createContext, useContext } from 'react'
 import { useState } from 'react'
 
-export const SingleProduct = createContext(null)
+const RetailProducts = createContext(null);
 
-function ProductContext({children}){
-    const [singleItem,setSingleItem] = useState(null)
-    return(
-        <SingleProduct.Provider value={{singleItem,setSingleItem}}>
+function ProductContext({ children }) {
+    const [saleItems, setSaleItems] = useState([]);
+    return (
+        <RetailProducts.Provider value={{ saleItems, setSaleItems }}>
             {children}
-        </SingleProduct.Provider>
+        </RetailProducts.Provider>
     )
-}
+};
+
+export const useProductContext = () => useContext(RetailProducts);
 
 export default ProductContext

@@ -29,17 +29,17 @@ import MyPosts from './pages/MyPosts';
 export default function Router() {
 
   const { user } = useContext(User)
-  const { singleItem } = useContext(SingleProduct)
   let admin = false
   if (user) {
-    if (user.email.includes("macrobay")) {
+    let domain = user.email.split('@');
+    if (domain[1] === "macrobay.org") {
       admin = true
     } else {
       admin = false
-    }
-  }
+    };
+  };
   let usersRoute = <ErrorLogo />, postsRoute = <ErrorLogo />
-  let productRoute = <ErrorLogo />, resultRoute = <Result />, profileRoute
+  let resultRoute = <Result />, profileRoute
   let loginRoute = <Login />, createPost, signupRoute = <Register />
   user ? loginRoute = <UserError /> : loginRoute = <Login />
   user ? createPost = <CreatePost /> : createPost = <Navigate to='/login' />
@@ -47,12 +47,6 @@ export default function Router() {
   user ? profileRoute = <Profile /> : profileRoute = <Navigate to='/login' />
   user ? postsRoute = <MyPosts/> : postsRoute = <Navigate to='/login' />
   admin ? usersRoute = <UserPage /> : usersRoute = <ErrorLogo />
-  
-  // if (singleItem != null) {
-  //   productRoute = <ProductView />
-  // } else {
-  //   productRoute = <ErrorLogo />
-  // }
 
   return useRoutes([
     {

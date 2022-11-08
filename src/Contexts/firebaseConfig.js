@@ -22,6 +22,3 @@ export const storage = getStorage(app) ;
 export const auth = getAuth(app) ;
 
 export const db = getFirestore(app) ;
-
-// console.log('logging db',db);console.log('logging auth MAIN',auth);
-//console.log('logging storage',storage);console.log('logging APP Firebase',app);

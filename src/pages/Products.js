@@ -8,16 +8,15 @@ import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } fro
 import { createContext } from 'react';
 import Iconify from 'src/components/Iconify';
 import useResponsive from 'src/hooks/useResponsive';
-import { useEffect } from 'react';
 
-// ----------------------------------------------------------------------
 export const ProductsRefresh = createContext(null)
 
 export default function EcommerceShop() {
   const [openFilter, setOpenFilter] = useState(false);
-  const [reload, setReload] = useState(false)
-  const [alert, setAlert] = useState(false)
-  const isMobile = useResponsive('down', 'sm')
+  const [reload, setReload] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const isMobile = useResponsive('down', 'sm');
+
   const handleOpenFilter = () => {
     setOpenFilter(true);
   };
@@ -25,7 +24,6 @@ export default function EcommerceShop() {
   const handleCloseFilter = () => {
     setOpenFilter(false);
   };
-
 
   return (
     <Page title="Sale">
@@ -46,7 +44,6 @@ export default function EcommerceShop() {
                 onOpenFilter={handleOpenFilter}
                 onCloseFilter={handleCloseFilter}
               />
-
               <ProductSort />
             </Stack>
           </Stack>
@@ -58,4 +55,4 @@ export default function EcommerceShop() {
       </Container>
     </Page>
   );
-}
+};
