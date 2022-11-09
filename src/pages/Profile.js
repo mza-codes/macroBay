@@ -12,7 +12,7 @@ import account from "src/_mock/account";
 import * as Yup from 'yup'
 import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "src/Contexts/firebaseConfig";
-import { doc, updateDoc, } from "firebase/firestore";
+import { collection, doc, getDocs, query, updateDoc, where, } from "firebase/firestore";
 import EditProfile from "./ProfileEdit";
 import Compressor from "compressorjs";
 
@@ -52,7 +52,7 @@ export default function Profile() {
         image: undefined,
     })
     const navigate = useNavigate()
-    const [disabled, setDisabled] = useState(false)
+    const [disabled, setDisabled] = useState(false);
 
     const compress = (image) => {
         return new Promise(async (resolve, reject) => {
@@ -200,8 +200,7 @@ export default function Profile() {
             console.log(metadata.fullPath);
             await deleteObject(ref(storage, metadata.fullPath))
         }
-        setUploadErr(false)
-        // user.photoURL = image
+        setUploadErr(false);
 
         await updateProfile(user, { photoURL: image })
         console.log(user)
@@ -235,11 +234,42 @@ export default function Profile() {
                 "File too Large",
                 value => value && value.size <= FILE_SIZE
             )
-    })
+    });
+
+    // fetchUserDoc for profile Updation
+    const fetchUserData = async (currentUser) => {
+        console.log("Fetching UserData");
+        let docData, docID;
+        const q = query(collection(db, 'webusers'), where('id', '==', currentUser.uid));
+        await getDocs(q).then((result) => {
+            console.log(result)
+            if (result.docs.length === 0) {
+                console.log('if true entered docs length ===0 ');
+                setUserData({
+                    docId: null,
+                });
+                setDisabled(true);
+                return false;
+            }
+            result.forEach((doc) => {
+                docID = doc.id
+                docData = doc.data()
+            });
+            setDisabled(false);
+            setDocId(docID);
+            setUserData({
+                docId: docID,
+                ...docData
+            });
+        }).catch((err) => { console.log(err); });
+    };
 
     useEffect(() => {
-        console.log("logging userData main...", userData);
-        setDocId(userData?.docId);
+        console.log("check if userData", userData);
+        if (userData.docId === null) {
+            console.log("inside if");
+            fetchUserData(user);
+        };
     }, []);
 
     const setUploadedImage = async (values) => {
@@ -268,13 +298,7 @@ export default function Profile() {
         setLoading2(false)
         setImage(url)
         await updateProfile(user, { photoURL: url })
-        storeData(key, url)
-        // setComplete(true)
-        // setTimeout(() => {
-        //     setComplete(false)
-        //     navigate('/')
-        // }, 2500);
-        // setTick(true)
+        storeData(key, url);
     };
 
     const ErrLog = <Iconify icon='bxs:message-square-error' color='red' width={20} height={20} />
@@ -315,7 +339,8 @@ export default function Profile() {
                                     <div style={styles.overlay}><IconButton disabled={profile.touched} onClick={showProfiles} ><div >
                                         <Iconify icon='flat-color-icons:edit-image' width={25} height={25} /></div>
                                     </IconButton></div>
-                                    {tick && <IconButton onClick={confirmUpdate} color="success" sx={{ float: 'right', mt: 1 }}>
+                                    {tick && <IconButton onClick={confirmUpdate} color="success" disabled={disabled}
+                                        sx={{ float: 'right', mt: 1 }}>
                                         <Iconify icon='charm:circle-tick' /> </IconButton>}
 
                                 </div>

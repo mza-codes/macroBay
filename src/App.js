@@ -10,8 +10,7 @@ import { useAuthContext } from './Contexts/UserContext';
 import { useProductContext } from './Contexts/ProductContext';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import _ from 'lodash';
-
-// ----------------------------------------------------------------------
+import lozad from 'lozad';
 
 export default function App() {
   const { setSaleItems } = useProductContext();
@@ -65,12 +64,18 @@ export default function App() {
     const unsub = onAuthStateChanged(auth, (user) => {
       fetchProducts();
       setUser(user);
-      user && fetchUserData(user);
+      // user && fetchUserData(user);
       console.log(user);
     });
 
     return () => { unsub(); };
   }, []);
+
+  useEffect(() => {
+    const el = document.querySelectorAll('.lozad'); //fix lazy load image
+    const observer = lozad(el); 
+    observer.observe();
+  })
 
   return (
     <ThemeProvider>
