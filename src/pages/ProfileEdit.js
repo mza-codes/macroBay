@@ -1,50 +1,43 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import { Form, Formik } from 'formik';
-import { Box, Container } from '@mui/system';
+import { Container } from '@mui/system';
 import { Alert, Grid, IconButton, Typography } from '@mui/material';
 import * as Yup from 'yup'
-import { useEffect } from 'react';
-import { collection, doc, query, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { db } from 'src/Contexts/firebaseConfig';
 import { LoadingButton } from '@mui/lab';
 import CustomInput from 'src/components/hook-form/CustomInput';
 import Iconify from 'src/components/Iconify';
 import { useState } from 'react';
-import { async } from '@firebase/util';
 import { updateProfile } from 'firebase/auth';
 import { useContext } from 'react';
-import { User } from 'src/Contexts/UserContext';
+import { useAuthContext, User } from 'src/Contexts/UserContext';
 
 export default function EditProfile({ value }) {
-  const [complete, setComplete] = useState(false)
-  const {user} = useContext(User)
+  const [complete, setComplete] = useState(false);
+  const {setUserData} = useAuthContext();
+  const { user } = useContext(User)
   console.log(value);
   let open = value[0]
   let setOpen = value[1]
-  let userData = value[2]
   let docId = value[3]
   let setUpdated = value[5]
   console.log(value[2]);
 
-  // let pincode = '', location = '', altMobile = '', username='', email='', phone='',
   let { username, email, phone, pincode, location, altMobile } = value[2]
   if (pincode === undefined || null) { pincode = '' }
   if (location === undefined || null) { location = '' }
   if (altMobile === undefined || null) { altMobile = '' }
   // const [open, setOpen] = React.useState(false);
-  console.log('logging Altered Values :::',username, email, phone, pincode, location, altMobile)
+  console.log('logging Altered Values :::', username, email, phone, pincode, location, altMobile);
   const handleClose = () => {
     if (window.confirm('Entered Data Will be Lost! Continue ?')) {
       setOpen(false);
-    }
-  }
+    };
+  };
 
   const profileSchema = Yup.object().shape({
     username: Yup.string().min(5, 'Username too short').max(15, 'Username limit character exceeds').required('UserName is required'),
@@ -55,24 +48,15 @@ export default function EditProfile({ value }) {
     location: Yup.string().min(3, 'Must be a minimum of 3 Characters').max(20, 'Must not exceed 20 Characters')
       .required('Location Required to Continue'),
     altMobile: Yup.string().min(9, 'Mobile Number not valid').max(15, 'Invalid Mobile Number')
-  })
+  });
 
-  // useEffect(() => {
-  //   console.log('useEff cld hr');
-  // }, [])
   const handleUpdate = async (values, actions) => {
     console.log('Updating User Data')
     console.log(values);
     console.log('logging DOC ID', docId)
     const docRef = doc(db, 'webusers', docId)
     const { username, phone, email, location, pincode, altMobile } = values
-    const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    await updateDoc(docRef, {
+    const updateData = {
       username,
       docId,
       phone,
@@ -80,23 +64,28 @@ export default function EditProfile({ value }) {
       location,
       pincode,
       altMobile
-    })
-      .then((response) => console.log(response))
-      .catch((err) => { console.log(err) })
-    await updateProfile(user, {displayName: username})
-    setComplete(true)
-    setUpdated(true)
-    setTimeout(() => {
-      setOpen(false)
-    }, 2500);
-  }
+    };
+    await updateDoc(docRef, updateData)
+      .then(async(response) => {
+        console.log(response);
+        setUserData((current) => ({ ...current, ...updateData }));
+        await updateProfile(user, { displayName: username });
+        setComplete(true);
+        setUpdated(true);
+        setTimeout(() => {
+          setOpen(false)
+        }, 2500);
+      }).catch((err) => { console.log("Error Updating UserData",err) })
+  };
+
   return (
     <div>
       <Dialog open={open}>
         <DialogActions>
           <IconButton
             onClick={handleClose}
-            color='error' > <Iconify icon='eva:close-square-fill' /> </IconButton>
+            color='error' > <Iconify icon='eva:close-square-fill' />
+          </IconButton>
         </DialogActions>
         <DialogContent>
           <Container maxWidth='lg'>
@@ -108,13 +97,6 @@ export default function EditProfile({ value }) {
                   Edit Your Profile Details from Here
                 </DialogContentText>
               </Grid>
-
-              {/* FORM Content */}
-
-              {/* initialValues={{
-                username: userData.username, email: userData.email, pincode: userData.pincode, phone: userData.phone,
-                location: userData.location, altMobile: userData.altMobile
-              }} */}
 
               <Formik initialValues={{
                 username: username, email: email, pincode: pincode, phone: phone, location: location, altMobile: altMobile
@@ -139,15 +121,10 @@ export default function EditProfile({ value }) {
                   </Form>
                 )}
               </Formik>
-
-              {/* Close FORM Content  */}
-
             </Grid>
           </Container>
         </DialogContent>
         <DialogActions>
-          {/* <IconButton color='success'> <Iconify  icon='ic:sharp-cloud-done' /> </IconButton> */}
-          {/* <Alert variant='filled' severity='success' > Details Updated <strong>Successfully !</strong> </Alert> */}
         </DialogActions>
       </Dialog>
     </div>

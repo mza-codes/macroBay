@@ -21,8 +21,8 @@ const ContentStyle = styled('div')(({ theme }) => ({
 }));
 
 export default function CreatePost() {
-  const [image,setImage] = useState(Blob)
-  const [image2,setImage2] = useState(Blob)
+  const [image,setImage] = useState(null);
+  const [image2,setImage2] = useState(null);
 
   return (
     <Page title="Sell">

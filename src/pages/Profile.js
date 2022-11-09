@@ -1,19 +1,18 @@
-import { Alert, Box, Button, Grid, IconButton, MenuItem, styled, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Grid, IconButton, MenuItem, styled, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import { updateProfile } from "firebase/auth";
 import { Form, Formik } from "formik";
-import { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/Iconify";
 import Page from "src/components/Page";
-import { User } from "src/Contexts/UserContext";
+import { useAuthContext } from "src/Contexts/UserContext";
 import account from "src/_mock/account";
 import * as Yup from 'yup'
 import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "src/Contexts/firebaseConfig";
-import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { doc, updateDoc, } from "firebase/firestore";
 import EditProfile from "./ProfileEdit";
 import Compressor from "compressorjs";
 
@@ -30,11 +29,11 @@ const styles = {
 }
 
 export default function Profile() {
+    const { userData, user, setUserData } = useAuthContext()
     const [loading, setLoading] = useState(false)
     const [image, setImage] = useState()
     const [show, setShow] = useState(false)
     const [pic, setPic] = useState(null)
-    const [fetchErr, setFetchErr] = useState(false)
     const [uploadErr, setUploadErr] = useState(false)
     const [err, setErr] = useState(null)
     const [imgHeight, setHeight] = useState('300')
@@ -43,9 +42,7 @@ export default function Profile() {
     const [profileArray, setProfileArray] = useState([])
     const [option, setOption] = useState('cover')
     const [tick, setTick] = useState(false)
-    const { user, setUser } = useContext(User);
     const [complete, setComplete] = useState(false)
-    const [userData, setUserData] = useState(null);
     const [updated, setUpdated] = useState(false)
     const [docId, setDocId] = useState()
     const [popup, setPopup] = useState(false)
@@ -96,10 +93,6 @@ export default function Profile() {
         const height = parseInt(imgHeight)
         console.log(imgWidth, imgHeight)
         console.log(width, height);
-        const values = {
-            height: '300',
-            width: '500'
-        }
         if (width <= 500 && height <= 500 &&
             width >= 30 && height >= 30) {
             console.log('trueState');
@@ -151,7 +144,6 @@ export default function Profile() {
             setLoading(false)
             setErr('Width And Height must be within 30-500 Range !')
         };
-
     };
 
     const storeData = async (key) => {
@@ -162,14 +154,17 @@ export default function Profile() {
             docId
         }
         await updateDoc(docRef, value)
-            .then((response) => console.log(response))
+            .then((response) => {
+                console.log(response);
+                setUserData((curr) => ({ ...curr, ...value }));
+            })
             .catch((err) => { console.log(err); })
         setComplete(true)
         setTimeout(() => {
             setComplete(false)
             navigate('/')
         }, 2500);
-    }
+    };
 
     const showProfiles = () => {
         setProfile({ touched: true })
@@ -178,13 +173,13 @@ export default function Profile() {
             values.push(i)
         }
         setProfileArray(values)
-    }
+    };
 
     const setProfileImg = (i) => {
         let prof = `/static/mock-images/avatars/avatar_${i}.jpg`
         setImage(prof)
         setTick(true)
-    }
+    };
 
     const confirmUpdate = async () => {
         setLoading2(true)
@@ -199,7 +194,7 @@ export default function Profile() {
         if (user.photoURL && user.photoURL.includes('firebasestorage', 'microbay')) { // use profileKey validation
             console.log('includes');
             console.log('userData logg', userData)
-            const delRef = ref(storage, userData.avatar)
+            const delRef = ref(storage, user.photoURL)
             let metadata = await getMetadata(delRef)
             console.log(metadata);
             console.log(metadata.fullPath);
@@ -242,29 +237,10 @@ export default function Profile() {
             )
     })
 
-    const fetchUserData = async () => {
-        let docData, docID
-        console.log(user.uid);
-        const q = query(collection(db, 'webusers'), where('id', '==', user.uid))
-        await getDocs(q).then((result) => {
-            console.log(result)
-            if (result.docs.length === 0) {
-                console.log('if true entered docs length ===0 ');
-                setDisabled(true)
-                return false
-            }
-            result.forEach((doc) => {
-                docID = doc.id
-                docData = doc.data()
-            })
-            setDocId(docID)
-            setUserData(docData)
-        }).catch((err) => { console.log(err); })
-    };
-
     useEffect(() => {
-        fetchUserData()
-    }, [updated])
+        console.log("logging userData main...", userData);
+        setDocId(userData?.docId);
+    }, []);
 
     const setUploadedImage = async (values) => {
         setLoading2(true)
@@ -410,8 +386,7 @@ export default function Profile() {
                                                 <Button color={props.errors.image ? 'error' : 'primary'} component="label" >
                                                     <input type="file" accept="image/*" onChange={e => {
                                                         props.setFieldValue('image', e.target.files[0]);
-                                                        // setProfile({ image: e.target.files[0] })
-                                                        { e.target.files[0] && setImage(URL.createObjectURL(e.target.files[0])) }
+                                                        setImage(URL.createObjectURL(e?.target?.files[0]));
                                                     }} hidden name="avatar" />
                                                     <Iconify icon='eva:cloud-upload-fill' width={28} height={28} />
                                                     Upload Your Avatar </Button>
