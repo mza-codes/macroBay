@@ -1,45 +1,20 @@
-import { Alert, Box, Button, Grid, IconButton, MenuItem, styled, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Grid, IconButton, MenuItem, styled, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/system";
-import ReactCrop from 'react-image-crop'
-import axios from "axios";
 import { updateProfile } from "firebase/auth";
 import { Form, Formik } from "formik";
-import { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/Iconify";
 import Page from "src/components/Page";
-import { User } from "src/Contexts/UserContext";
+import { useAuthContext } from "src/Contexts/UserContext";
 import account from "src/_mock/account";
 import * as Yup from 'yup'
 import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "src/Contexts/firebaseConfig";
-import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { doc, updateDoc, } from "firebase/firestore";
 import EditProfile from "./ProfileEdit";
 import Compressor from "compressorjs";
-import { useRef } from "react";
-
-
-// const ProfileImg = styled('img')({
-//     top: 0,
-//     maxWidth: '440px',
-//     maxHeight: '340px',
-//     width: '100%',
-//     height: '100%',
-//     objectFit: 'cover',
-//     // position: 'absolute',
-// });
-
-// const AvatarImg = styled('img')({
-//     top: 0,
-//     maxWidth: '128px',
-//     maxHeight: '128px',
-//     width: '128px',
-//     height: '128px',
-//     objectFit: 'fill',
-//     // position: 'absolute',
-// });
 
 const styles = {
     card: {
@@ -54,11 +29,11 @@ const styles = {
 }
 
 export default function Profile() {
+    const { userData, user, setUserData } = useAuthContext()
     const [loading, setLoading] = useState(false)
     const [image, setImage] = useState()
     const [show, setShow] = useState(false)
     const [pic, setPic] = useState(null)
-    const [fetchErr, setFetchErr] = useState(false)
     const [uploadErr, setUploadErr] = useState(false)
     const [err, setErr] = useState(null)
     const [imgHeight, setHeight] = useState('300')
@@ -67,10 +42,7 @@ export default function Profile() {
     const [profileArray, setProfileArray] = useState([])
     const [option, setOption] = useState('cover')
     const [tick, setTick] = useState(false)
-    const { user, setUser } = useContext(User)
     const [complete, setComplete] = useState(false)
-    const [userData, setUserData] = useState(null)
-    // const [touched, setTouched] = useState(false)
     const [updated, setUpdated] = useState(false)
     const [docId, setDocId] = useState()
     const [popup, setPopup] = useState(false)
@@ -93,8 +65,8 @@ export default function Profile() {
                     resolve(result)
                 }
             })
-        })
-    }
+        });
+    };
 
     const AvatarImg = styled('img')({
         top: 0,
@@ -103,7 +75,6 @@ export default function Profile() {
         width: '128px',
         height: '128px',
         objectFit: option,
-        // position: 'absolute',
     });
 
     const ProfileImg = styled('img')({
@@ -113,7 +84,6 @@ export default function Profile() {
         width: '100%',
         height: '100%',
         objectFit: option,
-        // position: 'absolute',
     });
 
     const handleImg = async () => {
@@ -123,10 +93,6 @@ export default function Profile() {
         const height = parseInt(imgHeight)
         console.log(imgWidth, imgHeight)
         console.log(width, height);
-        const values = {
-            height: '300',
-            width: '500'
-        }
         if (width <= 500 && height <= 500 &&
             width >= 30 && height >= 30) {
             console.log('trueState');
@@ -164,7 +130,7 @@ export default function Profile() {
                     //     document.body.appendChild(link);
                     //     link.click();
                     // })
-                }
+                };
             }).catch(err => {
                 setErr('Catched Error: ', err)
                 console.log(err);
@@ -177,9 +143,8 @@ export default function Profile() {
             console.log('falseState');
             setLoading(false)
             setErr('Width And Height must be within 30-500 Range !')
-        }
-
-    }
+        };
+    };
 
     const storeData = async (key) => {
         const docRef = doc(db, 'webusers', docId)
@@ -189,15 +154,17 @@ export default function Profile() {
             docId
         }
         await updateDoc(docRef, value)
-            .then((response) => console.log(response))
+            .then((response) => {
+                console.log(response);
+                setUserData((curr) => ({ ...curr, ...value }));
+            })
             .catch((err) => { console.log(err); })
         setComplete(true)
         setTimeout(() => {
             setComplete(false)
             navigate('/')
         }, 2500);
-        // setTick(true)
-    }
+    };
 
     const showProfiles = () => {
         setProfile({ touched: true })
@@ -206,13 +173,13 @@ export default function Profile() {
             values.push(i)
         }
         setProfileArray(values)
-    }
+    };
 
     const setProfileImg = (i) => {
         let prof = `/static/mock-images/avatars/avatar_${i}.jpg`
         setImage(prof)
         setTick(true)
-    }
+    };
 
     const confirmUpdate = async () => {
         setLoading2(true)
@@ -227,7 +194,7 @@ export default function Profile() {
         if (user.photoURL && user.photoURL.includes('firebasestorage', 'microbay')) { // use profileKey validation
             console.log('includes');
             console.log('userData logg', userData)
-            const delRef = ref(storage, userData.avatar)
+            const delRef = ref(storage, user.photoURL)
             let metadata = await getMetadata(delRef)
             console.log(metadata);
             console.log(metadata.fullPath);
@@ -270,29 +237,10 @@ export default function Profile() {
             )
     })
 
-    const fetchUserData = async () => {
-        let docData, docID
-        console.log(user.uid);
-        const q = query(collection(db, 'webusers'), where('id', '==', user.uid))
-        await getDocs(q).then((result) => {
-            console.log(result)
-            if (result.docs.length === 0) {
-                console.log('if true entered docs length ===0 ');
-                setDisabled(true)
-                return false
-            }
-            result.forEach((doc) => {
-                docID = doc.id
-                docData = doc.data()
-            })
-            setDocId(docID)
-            setUserData(docData)
-        }).catch((err) => { console.log(err); })
-    }
-
     useEffect(() => {
-        fetchUserData()
-    }, [updated])
+        console.log("logging userData main...", userData);
+        setDocId(userData?.docId);
+    }, []);
 
     const setUploadedImage = async (values) => {
         setLoading2(true)
@@ -308,7 +256,7 @@ export default function Profile() {
         }
         let compressed = await compress(image)
         console.log('Updating Profile')
-        
+
         let dt = new Date().toISOString().toString().split(':', 6)
         let i = dt.length - 1
         let key = dt[i]
@@ -327,17 +275,7 @@ export default function Profile() {
         //     navigate('/')
         // }, 2500);
         // setTick(true)
-    }
-
-    const ContentStyle = styled('div')(({ theme }) => ({
-        maxWidth: 480,
-        margin: 'auto',
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        padding: theme.spacing(12, 0),
-    }));
+    };
 
     const ErrLog = <Iconify icon='bxs:message-square-error' color='red' width={20} height={20} />
 
@@ -363,7 +301,6 @@ export default function Profile() {
                                 {loading2 && <div className="loaderSmall" />}
                                 {uploadErr && <Typography variant="overline" color='error' > Please Use the Preferred Confim Button
                                     for Update by File Upload </Typography>}
-
                             </Grid>
 
                             <Grid container
@@ -373,7 +310,6 @@ export default function Profile() {
                                 <Typography mb={0.5} variant="overline"> Profile Picture </Typography>
                                 <hr />
                                 <div style={styles.card}>
-                                    {/* <ProfileImg src="https://source.unsplash.com/random" alt="image" /> */}
                                     <ProfileImg id="img" src={user && user.photoURL ? user.photoURL : account.photoURL}
                                         srcSet={image} alt="image" />
                                     <div style={styles.overlay}><IconButton disabled={profile.touched} onClick={showProfiles} ><div >
@@ -391,14 +327,13 @@ export default function Profile() {
                                 {user && <> <Typography m={0.2} variant="subtitle1"> Name: {user.displayName} </Typography>
                                     <Typography m={0.2} variant="subtitle2"> E-Mail: {user.email} </Typography>
 
-                                    {userData && <> <Typography m={0.2} variant="subtitle2"> Phone: {userData.phone ||ErrLog }</Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Alt Mobile: {userData.altMobile ||ErrLog } </Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Pin Code: {userData.pincode ||ErrLog } </Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Location: {userData.location ||ErrLog } </Typography> </>}
-                                    {/* {<Typography m={0.2} variant="subtitle2"> Join Date: {userData.joinDate || ErrLog } </Typography>} */}
-                                    <Tooltip title='This UserID is generated on account creation & rarely useful to User'>
-                                        <Typography m={0.2} variant="subtitle2"> UserID: {user.uid}</Typography>
-                                    </Tooltip> </>}
+                                    {userData && <>
+                                        <Typography m={0.2} variant="subtitle2"> Phone: {userData.phone || ErrLog}</Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Alt Mobile: {userData.altMobile || ErrLog} </Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Pin Code: {userData.pincode || ErrLog} </Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Location: {userData.location || ErrLog} </Typography>
+                                    </>}
+                                </>}
                                 {/* <Iconify icon='ep:warning-filled' /> */}
                                 {updated ? <IconButton color="success" sx={{ float: 'right', mt: 1 }}>
                                     <Iconify icon='charm:circle-tick' />
@@ -451,8 +386,7 @@ export default function Profile() {
                                                 <Button color={props.errors.image ? 'error' : 'primary'} component="label" >
                                                     <input type="file" accept="image/*" onChange={e => {
                                                         props.setFieldValue('image', e.target.files[0]);
-                                                        // setProfile({ image: e.target.files[0] })
-                                                        { e.target.files[0] && setImage(URL.createObjectURL(e.target.files[0])) }
+                                                        setImage(URL.createObjectURL(e?.target?.files[0]));
                                                     }} hidden name="avatar" />
                                                     <Iconify icon='eva:cloud-upload-fill' width={28} height={28} />
                                                     Upload Your Avatar </Button>

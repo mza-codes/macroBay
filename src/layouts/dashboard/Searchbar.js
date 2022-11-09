@@ -2,14 +2,11 @@ import { useState } from 'react';
 import * as Yup from 'yup'
 // material
 import { styled, alpha } from '@mui/material/styles';
-import { Input, Slide, Button, IconButton, InputAdornment, ClickAwayListener, Select, MenuItem } from '@mui/material';
-// component
+import { Input, Slide, Button, IconButton, InputAdornment, Select, MenuItem } from '@mui/material';
 import Iconify from '../../components/Iconify';
 import { useNavigate } from 'react-router-dom';
 import { selectValues } from 'src/pages/CreatePostFormSimple';
 import { Form, Formik } from 'formik';
-
-// ----------------------------------------------------------------------
 
 const APPBAR_MOBILE = 64;
 const APPBAR_DESKTOP = 92;
@@ -34,18 +31,11 @@ const SearchbarStyle = styled('div')(({ theme }) => ({
   },
 }));
 
-// ----------------------------------------------------------------------
-
 export default function Searchbar() {
   const [isOpen, setOpen] = useState(false);
-  // const [query, setQuery] = useState('')
-  // const [category, setCategory] = useState('')
-
-
-  const navigate = useNavigate()
-  let selections = selectValues
-
-
+  const navigate = useNavigate();
+  let selections = selectValues;
+  
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
@@ -54,43 +44,26 @@ export default function Searchbar() {
     setOpen(false);
   };
 
-  // function validateQuery() {
-  //   if (query.length === 0 && category.length === 0) {
-  //     setErrView(true)
-  //   }
-  //   if (query.length >= 3 && query.length <= 20) {
-  //     setErrView(false)
-  //   } else if (category.length != 0) {
-  //     setErrView(false)
-  //   } else {
-  //     setErrView(true)
-  //   }
-  // }
-
   const handleSearch = (values, actions) => {
     const { query, category } = values
     console.log('data onSubmit', values);
     navigate('/dashboard/result', { state: { category, params: query } })
-    setOpen(false)
-
-
-  }
+    setOpen(false);
+    return;
+  };
   const schema = Yup.object().shape({
     query: Yup.string().min(2, 'Query too short').max(20, 'Query Character limit reached'),
     category: Yup.string()
-  })
+  });
 
   return (
-    // 
     <div>
       {!isOpen && (
         <IconButton onClick={handleOpen}>
           <Iconify icon="eva:search-fill" width={20} height={20} />
         </IconButton>
       )}
-
       <Slide direction="down" in={isOpen} mountOnEnter unmountOnExit>
-
         <SearchbarStyle>
           <Formik initialValues={{ query: '', category: 'a' }}
             validationSchema={schema}
@@ -100,13 +73,11 @@ export default function Searchbar() {
                 {/* <ClickAwayListener onClickAway={handleClose}> */}
                 <Input
                   autoFocus
-                  // fullWidth
                   disableUnderline
                   placeholder="Search…"
                   name='query'
                   value={props.values.query}
                   onChange={(e) => { props.setFieldValue('query', e.target.value) }}
-                  // value={query}
                   startAdornment={
                     <>
                       <InputAdornment position="start">
@@ -118,11 +89,9 @@ export default function Searchbar() {
                 />
                 {/* </ClickAwayListener> */}
                 <Select
-                  // autoFocus
                   sx={{ mr: 2, height: 25 }}
                   variant="outlined"
                   name='category'
-                  // value={category}
                   value={props.values.category}
                   onChange={(e) => { props.setFieldValue('category', e.target.value) }}
                 >
@@ -133,66 +102,13 @@ export default function Searchbar() {
                     )
                   })}
                 </Select>
-                <Button 
-                // disabled={!props.values.query.length != 0 || !props.values.category.length != 0}
-                  type='submit' variant="contained" > Search </Button>
-              </Form>)}
+                <Button type='submit' variant="contained" > Search </Button>
+              </Form>
+            )}
           </Formik>
           <Button color='error' onClick={handleClose} sx={{ mx: 1 }} > <Iconify icon='eva:close-circle-fill' height={25} width={25} /> </Button>
         </SearchbarStyle>
-
       </Slide>
     </div>
-    // 
   );
-
-  // return (
-  //   // <ClickAwayListener onClickAway={handleClose}>
-  //   <div>
-  //     {!isOpen && (
-  //       <IconButton onClick={handleOpen}>
-  //         <Iconify icon="eva:search-fill" width={20} height={20} />
-  //       </IconButton>
-  //     )}
-
-  //     <Slide direction="down" in={isOpen} mountOnEnter unmountOnExit>
-  //       <SearchbarStyle>
-  //         <Input
-  //           autoFocus
-  //           fullWidth
-  //           disableUnderline
-  //           placeholder="Search…"
-  //           onChange={(e) => { setQuery(e.target.value);validateQuery() }}
-  //           value={query}
-  //           startAdornment={
-  //             <>
-  //               <InputAdornment position="start">
-  //                 <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-  //               </InputAdornment>
-  //             </>
-  //           }
-  //           sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
-  //         />
-  //         <Select
-  //           autoFocus
-  //           sx={{ mr: 2 }}
-  //           variant="outlined"
-  //           value={category}
-  //           onChange={(e) => { setCategory(e.target.value);validateQuery() }}
-  //         >
-  //           <MenuItem value=''> All </MenuItem>
-  //           {selections.map((option) => {
-  //             return (
-  //               <MenuItem key={option} value={option}> {option} </MenuItem>
-  //             )
-  //           })}
-  //         </Select>
-  //         <Button disabled={errView} variant="contained" onClick={handleSearch}>
-  //           Search
-  //         </Button>
-  //       </SearchbarStyle>
-  //     </Slide>
-  //   </div>
-  //   // </ClickAwayListener>
-  // );
 }

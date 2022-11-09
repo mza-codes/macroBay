@@ -14,4 +14,4 @@ function ProductContext({ children }) {
 
 export const useProductContext = () => useContext(RetailProducts);
 
-export default ProductContext
+export default ProductContext;
