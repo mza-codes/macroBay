@@ -1,33 +1,29 @@
 import * as Yup from 'yup';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { addDoc, collection, doc, setDoc } from "firebase/firestore"
-import Compressor from 'compressorjs'
-// form
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
-import { Button, Alert, InputAdornment, Tooltip, IconButton } from '@mui/material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { addDoc, collection } from "firebase/firestore"
+import Compressor from 'compressorjs';
+import { Button, Alert, Tooltip, IconButton, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// components
 import Iconify from '../components/Iconify';
 import { db, storage } from 'src/Contexts/firebaseConfig';
 import { useContext } from 'react';
-import { ImgView } from './CreatePost';
-import { Form, Formik, useField } from 'formik';
+import { Form, Formik } from 'formik';
 import CustomInput, { CustomSelect } from 'src/components/hook-form/CustomInput';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { User } from 'src/Contexts/UserContext';
+import { useProductContext } from 'src/Contexts/ProductContext';
 
-// ----------------------------------------------------------------------
 export const selectValues = ['Electronics', 'Gadgets', 'Buildings', 'Land', 'Apartments', 'Bikes', 'Cars', 'Laptop', 'Cycles', 'Desktop',
-    'Wallpapers', 'Art', 'Scooters', 'Furnitures', 'Office', 'IT Equipments', 'Tools', 'Others']
-export default function PostForm({value}) {
+    'Wallpapers', 'Art', 'Scooters', 'Furnitures', 'Office', 'IT Equipments', 'Tools', 'Others'];
+
+export default function PostForm({ value }) {
+    const { setSaleItems } = useProductContext();
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const [success, setSuccess] = useState(false)
-    // const { image, setImage, setImage2 } = useContext(ImgView)
-    const [ setImage, setImage2 ] = value
-    const { user } = useContext(User)
+    const [success, setSuccess] = useState(false);
+    const [setImage, setImage2] = value;
+    const { user } = useContext(User);
     const FILE_SIZE = 6001200;
     const SUPPORTED_FORMATS = [
         "image/jpg",
@@ -52,7 +48,7 @@ export default function PostForm({value}) {
                 "File too Large",
                 value => value && value.size <= FILE_SIZE
             )
-    })
+    });
 
     const compress = (image) => {
         return new Promise(async (resolve, reject) => {
@@ -64,29 +60,26 @@ export default function PostForm({value}) {
                 success(result) {
                     resolve(result)
                 }
-            })
+            });
 
-        })
-    }
+        });
+    };
 
     const handlePost = async (values, actions) => {
-        const {setSubmitting} = actions
-        
+        setLoading(true);
         console.log('logging final VALUES', values)
         console.log('logging actions', actions)
         const { name, category, price, image, description } = values
         let compressed = await compress(image)
         setImage2(compressed)
         console.log(compressed, ':: logging compressed before');
-        const imageRef = ref(storage, `/productImages/${name + image.name}`)
-
+        const imageRef = ref(storage, `/productImages/${name + image.name}`);
         console.log('end line');
-        // setSubmitting(true)
         uploadBytes(imageRef, compressed).then((snap) => {
             console.log('upload Complete', snap);
             getDownloadURL(snap.ref).then((url) => {
                 console.log('fetched URL', url);
-                addDoc(collection(db, 'products'), {
+                const newProduct = {
                     name,
                     category,
                     price,
@@ -94,33 +87,33 @@ export default function PostForm({value}) {
                     userId: user.uid,
                     description,
                     postDate: new Date().toLocaleString()
-                }).catch((err) => console.log(err))
-            }).catch((err) => console.log(err))
-        }).catch((err) => console.log(err))
-
-        setSuccess(true)
-        setTimeout(() => {
-            setSuccess(false);
-        }, 5000);
-        setTimeout(() => {
-            navigate('/')
-        }, 1000);
-    }
+                };
+                addDoc(collection(db, 'products'), newProduct).then((res) => {
+                    console.log("Added Doc to Firebase printing response", res);
+                    setSuccess(true);
+                    setLoading(false);
+                    setSaleItems((curr) => ([...curr, newProduct]));
+                    setTimeout(() => {
+                        setSuccess(false);
+                    }, 5000);
+                    setTimeout(() => {
+                        navigate('/')
+                    }, 1000);
+                }).catch((err) => { console.log(err); setLoading(false); });
+            }).catch((err) => { console.log(err); setLoading(false); });
+        }).catch((err) => { console.log(err); setLoading(false); });
+    };
 
     return (
         <div>
             {success && <Alert sx={{ mt: 2 }} variant="filled" severity="success" color="success">
                 Item Listed for Sale <strong>Successfully</strong>
             </Alert>}
-            <Formik
-                initialValues={{ name: '', category: '', price: '', image: undefined, description: '' }}
+            <Formik initialValues={{ name: '', category: '', price: '', image: undefined, description: '' }}
                 validationSchema={formSchema}
-                onSubmit={handlePost}
-            >
+                onSubmit={handlePost}>
                 {props => (
-
                     <Form >
-                        {/* {console.log(props)} */}
                         <div style={{ float: 'right' }}> <Tooltip title="Clear Fields">
                             <IconButton color="primary" onClick={() => { props.handleReset() }}>
                                 <Iconify icon="pajamas:clear-all" width={20} height={20} />
@@ -168,7 +161,6 @@ export default function PostForm({value}) {
                             component="label"
                             fullWidth
                             disabled={props.values.image && SUPPORTED_FORMATS.includes(props.values.image.type)}
-                            // color='primary'
                             color={props.errors.image ? 'warning' : 'primary'}
                             sx={{ mt: 1 }}
                         >
@@ -187,14 +179,14 @@ export default function PostForm({value}) {
                             />
                         </Button>
                         <h6 className='errorInput p' style={{ marginLeft: '0.4rem' }} > {props.errors.image} </h6>
-                        <LoadingButton type='submit' color='success' variant='contained' fullWidth disabled={!props.isValid}
+                        {!loading ? <LoadingButton type='submit' color='success' variant='contained' fullWidth disabled={!props.isValid}
                             loading={props.isSubmitting} >
-                            <span className={props.isValid ? 'textWhite' : 'textBlack'}> Submit</span> </LoadingButton>
-
+                            <span className={props.isValid ? 'textWhite' : 'textBlack'}> Submit</span>
+                        </LoadingButton> : 
+                        <Typography variant='h5' textAlign={'center'} >Sumitting Data...</Typography>}
                     </Form>
                 )}
             </Formik>
-
         </div>
     )
 }

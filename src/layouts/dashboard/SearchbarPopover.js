@@ -1,32 +1,20 @@
 import { useRef, useState } from 'react';
-import * as Yup from 'yup'
-// material
-import { styled, alpha } from '@mui/material/styles';
-import { Input, Slide, Button, IconButton, InputAdornment, ClickAwayListener, Select, MenuItem, Badge, Box, 
-  Typography, Tooltip, Divider, List, ListSubheader } from '@mui/material';
-// component
+import * as Yup from 'yup';
+import {
+  Input, Button, IconButton, InputAdornment, Select, MenuItem, Badge, Box,
+  Typography, Tooltip, Divider, List
+} from '@mui/material';
 import Iconify from '../../components/Iconify';
 import { useNavigate } from 'react-router-dom';
 import { selectValues } from 'src/pages/CreatePostFormSimple';
 import { Form, Formik } from 'formik';
 import MenuPopover from 'src/components/MenuPopover';
 import Scrollbar from 'src/components/Scrollbar';
-import { useEffect } from 'react';
-
-// ----------------------------------------------------------------------
-
-// ----------------------------------------------------------------------
 
 export default function SearchbarPopOver() {
-
-  const [errView, setErrView] = useState(true)
-
-
-  const navigate = useNavigate()
-  let selections = selectValues
-
+  const navigate = useNavigate();
+  let selections = selectValues;
   const anchorRef = useRef(null);
-
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -37,22 +25,19 @@ export default function SearchbarPopOver() {
     setOpen(null);
   };
 
-  const handleMarkAllAsRead = () => {
-    console.log('handleMarkAllAsRead Called');
-  };
-
   const schema = Yup.object().shape({
-    query: Yup.string().min(1, 'Query too short').max(20, 'Query too High'),
+    query: Yup.string().min(1, 'Query too short').max(50, 'Query too High'),
     category: Yup.string()
-  })
-
+  });
 
   const handleSearch = (values, actions) => {
     const { query, category } = values
     console.log('data onSubmit', values);
     navigate('/dashboard/result', { state: { category, params: query } })
-    setOpen(false)
-  }
+    setOpen(false);
+    return;
+  };
+
   return (
     <>
       <IconButton
@@ -83,7 +68,6 @@ export default function SearchbarPopOver() {
                   <Typography variant="body2" color={props.errors.query ? 'error' : 'GrayText'}>
                     {props.errors.query ? props.errors.query : <> Let's Find it here ! </>}
                   </Typography>
-
                 </Box>
                 {!props.isValid && <>
                   <Tooltip title={props.errors.query}><div className="red"> <Iconify icon='clarity:error-line'
@@ -93,18 +77,14 @@ export default function SearchbarPopOver() {
                     <Iconify icon="pajamas:clear-all" width={20} height={20} />
                   </IconButton>
                 </Tooltip>
-
               </Box>
 
               <Divider sx={{ borderStyle: 'dashed' }} />
 
               <Scrollbar sx={{ height: { xs: 'auto', sm: 'auto' } }}>
                 <List >
-
-                  {/* <ClickAwayListener onClickAway={handleClose}> */}
                   <Input
                     autoFocus
-                    // fullWidth
                     disableUnderline
                     placeholder="Search…"
                     name='query'
@@ -119,11 +99,9 @@ export default function SearchbarPopOver() {
                         </InputAdornment>
                       </>
                     }
-
                     endAdornment={
                       <>
                         <InputAdornment position="end">
-                          {/* <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} /> */}
                           <Select
                             // autoFocus
                             sx={{ mr: 2, height: 25 }}
@@ -161,134 +139,4 @@ export default function SearchbarPopOver() {
       </MenuPopover>
     </>
   );
-  // function validateQuery() {
-  //   if (query.length === 0 && category.length === 0) {
-  //     setErrView(true)
-  //   }
-  //   if (query.length >= 3 && query.length <= 20) {
-  //     setErrView(false)
-  //   } else if (category.length != 0) {
-  //     setErrView(false)
-  //   } else {
-  //     setErrView(true)
-  //   }
-  // }
-
-
-
-  // return (
-  //   // 
-  //   <div>
-  //     {!isOpen && (
-  //       <IconButton onClick={handleOpen}>
-  //         <Iconify icon="eva:search-fill" width={20} height={20} />
-  //       </IconButton>
-  //     )}
-
-  //     <Slide direction="down" in={isOpen} mountOnEnter unmountOnExit>
-
-  //       <SearchbarStyle>
-  //         <Formik initialValues={{ query: '', category: '' }}
-  //           validationSchema={schema} 
-  //           onSubmit={handleSearch} >
-  //           {props => (
-  //             <Form>{console.log('LOGGIN MAIN PROPS', props, 'VALUES ===', props.values)}
-  //               {/* <ClickAwayListener onClickAway={handleClose}> */}
-  //                 <Input
-  //                 autoFocus
-  //                 // fullWidth
-  //                 disableUnderline
-  //                 placeholder="Search…"
-  //                 name='query'
-  //                 value={props.values.query}
-  //                 onChange={(e) => { props.setFieldValue('query', e.target.value) }}
-  //                 // value={query}
-  //                 startAdornment={
-  //                   <>
-  //                     <InputAdornment position="start">
-  //                       <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-  //                     </InputAdornment>
-  //                   </>
-  //                 }
-  //                 sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
-  //               />
-  //               {/* </ClickAwayListener> */}
-  //               <Select
-  //                 // autoFocus
-  //                 sx={{ mr: 2,height: 25 }}
-  //                 variant="outlined"
-  //                 name='category'
-  //                 // value={category}
-  //                 value={props.values.category}
-  //                 onChange={(e) => { props.setFieldValue('category', e.target.value) }}
-  //               > 
-  //               <MenuItem value='a' > All </MenuItem>
-  //                 {selections.map((option) => {
-  //                   return (
-  //                     <MenuItem key={option} value={option}> {option} </MenuItem>
-  //                   )
-  //                 })}
-  //               </Select>
-  //               <Button disabled={!props.isValid} type='submit' variant="contained" >
-  //                 Search
-  //               </Button>
-  //             </Form>)}
-  //         </Formik>
-  //         <Button color='error' onClick={handleClose} sx={{mx:1}} > <Iconify icon='eva:close-circle-fill' height={25} width={25} /> </Button>
-  //       </SearchbarStyle>
-
-  //     </Slide>
-  //   </div>
-  //   // 
-  // );
-
-  // return (
-  //   // <ClickAwayListener onClickAway={handleClose}>
-  //   <div>
-  //     {!isOpen && (
-  //       <IconButton onClick={handleOpen}>
-  //         <Iconify icon="eva:search-fill" width={20} height={20} />
-  //       </IconButton>
-  //     )}
-
-  //     <Slide direction="down" in={isOpen} mountOnEnter unmountOnExit>
-  //       <SearchbarStyle>
-  //         <Input
-  //           autoFocus
-  //           fullWidth
-  //           disableUnderline
-  //           placeholder="Search…"
-  //           onChange={(e) => { setQuery(e.target.value);validateQuery() }}
-  //           value={query}
-  //           startAdornment={
-  //             <>
-  //               <InputAdornment position="start">
-  //                 <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-  //               </InputAdornment>
-  //             </>
-  //           }
-  //           sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
-  //         />
-  //         <Select
-  //           autoFocus
-  //           sx={{ mr: 2 }}
-  //           variant="outlined"
-  //           value={category}
-  //           onChange={(e) => { setCategory(e.target.value);validateQuery() }}
-  //         >
-  //           <MenuItem value=''> All </MenuItem>
-  //           {selections.map((option) => {
-  //             return (
-  //               <MenuItem key={option} value={option}> {option} </MenuItem>
-  //             )
-  //           })}
-  //         </Select>
-  //         <Button disabled={errView} variant="contained" onClick={handleSearch}>
-  //           Search
-  //         </Button>
-  //       </SearchbarStyle>
-  //     </Slide>
-  //   </div>
-  //   // </ClickAwayListener>
-  // );
 }

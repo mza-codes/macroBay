@@ -1,22 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 // material
 import { Menu, Button, MenuItem, Typography } from '@mui/material';
-// component
-// import Iconify from '../../../components/Iconify';
 import Iconify from 'src/components/Iconify';
 import * as _ from "lodash";
-import { useContext } from 'react';
-import { SortResult } from './ResultV2';
 
-// ----------------------------------------------------------------------
-
-
-
-export default function ResultSort() {
+export default function ResultSort({actions}) {
   const [open, setOpen] = useState(null);
   let localProducts
-  const { products, setProducts } = useContext(SortResult)
-
+  const { products, setProducts } = actions;
   const [label, setLabel] = useState('')
   
   const handleOpen = (event) => {
@@ -56,16 +47,10 @@ export default function ResultSort() {
       } else {
         sorted = _.sortBy(localProducts, 'name')
         // sorted = _.sortBy(localProducts, ['name','price'])
-      }
+      };
 
-      // sessionStorage.setItem("localProducts", JSON.stringify(sorted));
-      // setReload(true)
-      console.log('SORTED DATA',sorted);
       setProducts(sorted)
       setOpen(null)
-      // setReload(true)
-      // state= null
-      // props = null
     }
 
   }
@@ -97,8 +82,6 @@ export default function ResultSort() {
         {SORT_BY_OPTIONS.map((option) => (
           <MenuItem
             key={option.label}
-            // selected={!option.value===''}
-            // onChange={() => }
             value={option.value}
             onClick={() => { setLabel(option.label); handleSort(option.value, option.state) }}
             sx={{ typography: 'body2' }}

@@ -1,13 +1,11 @@
 import { Alert, Box, Button, Grid, IconButton, MenuItem, styled, TextField, Tooltip, Typography } from "@mui/material";
 import { Container } from "@mui/system";
-import ReactCrop from 'react-image-crop'
-import axios from "axios";
 import { updateProfile } from "firebase/auth";
 import { Form, Formik } from "formik";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/Iconify";
 import Page from "src/components/Page";
 import { User } from "src/Contexts/UserContext";
@@ -15,31 +13,9 @@ import account from "src/_mock/account";
 import * as Yup from 'yup'
 import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "src/Contexts/firebaseConfig";
-import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import EditProfile from "./ProfileEdit";
 import Compressor from "compressorjs";
-import { useRef } from "react";
-
-
-// const ProfileImg = styled('img')({
-//     top: 0,
-//     maxWidth: '440px',
-//     maxHeight: '340px',
-//     width: '100%',
-//     height: '100%',
-//     objectFit: 'cover',
-//     // position: 'absolute',
-// });
-
-// const AvatarImg = styled('img')({
-//     top: 0,
-//     maxWidth: '128px',
-//     maxHeight: '128px',
-//     width: '128px',
-//     height: '128px',
-//     objectFit: 'fill',
-//     // position: 'absolute',
-// });
 
 const styles = {
     card: {
@@ -67,10 +43,9 @@ export default function Profile() {
     const [profileArray, setProfileArray] = useState([])
     const [option, setOption] = useState('cover')
     const [tick, setTick] = useState(false)
-    const { user, setUser } = useContext(User)
+    const { user, setUser } = useContext(User);
     const [complete, setComplete] = useState(false)
-    const [userData, setUserData] = useState(null)
-    // const [touched, setTouched] = useState(false)
+    const [userData, setUserData] = useState(null);
     const [updated, setUpdated] = useState(false)
     const [docId, setDocId] = useState()
     const [popup, setPopup] = useState(false)
@@ -93,8 +68,8 @@ export default function Profile() {
                     resolve(result)
                 }
             })
-        })
-    }
+        });
+    };
 
     const AvatarImg = styled('img')({
         top: 0,
@@ -103,7 +78,6 @@ export default function Profile() {
         width: '128px',
         height: '128px',
         objectFit: option,
-        // position: 'absolute',
     });
 
     const ProfileImg = styled('img')({
@@ -113,7 +87,6 @@ export default function Profile() {
         width: '100%',
         height: '100%',
         objectFit: option,
-        // position: 'absolute',
     });
 
     const handleImg = async () => {
@@ -164,7 +137,7 @@ export default function Profile() {
                     //     document.body.appendChild(link);
                     //     link.click();
                     // })
-                }
+                };
             }).catch(err => {
                 setErr('Catched Error: ', err)
                 console.log(err);
@@ -177,9 +150,9 @@ export default function Profile() {
             console.log('falseState');
             setLoading(false)
             setErr('Width And Height must be within 30-500 Range !')
-        }
+        };
 
-    }
+    };
 
     const storeData = async (key) => {
         const docRef = doc(db, 'webusers', docId)
@@ -196,7 +169,6 @@ export default function Profile() {
             setComplete(false)
             navigate('/')
         }, 2500);
-        // setTick(true)
     }
 
     const showProfiles = () => {
@@ -288,7 +260,7 @@ export default function Profile() {
             setDocId(docID)
             setUserData(docData)
         }).catch((err) => { console.log(err); })
-    }
+    };
 
     useEffect(() => {
         fetchUserData()
@@ -308,7 +280,7 @@ export default function Profile() {
         }
         let compressed = await compress(image)
         console.log('Updating Profile')
-        
+
         let dt = new Date().toISOString().toString().split(':', 6)
         let i = dt.length - 1
         let key = dt[i]
@@ -327,17 +299,7 @@ export default function Profile() {
         //     navigate('/')
         // }, 2500);
         // setTick(true)
-    }
-
-    const ContentStyle = styled('div')(({ theme }) => ({
-        maxWidth: 480,
-        margin: 'auto',
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        padding: theme.spacing(12, 0),
-    }));
+    };
 
     const ErrLog = <Iconify icon='bxs:message-square-error' color='red' width={20} height={20} />
 
@@ -363,7 +325,6 @@ export default function Profile() {
                                 {loading2 && <div className="loaderSmall" />}
                                 {uploadErr && <Typography variant="overline" color='error' > Please Use the Preferred Confim Button
                                     for Update by File Upload </Typography>}
-
                             </Grid>
 
                             <Grid container
@@ -373,7 +334,6 @@ export default function Profile() {
                                 <Typography mb={0.5} variant="overline"> Profile Picture </Typography>
                                 <hr />
                                 <div style={styles.card}>
-                                    {/* <ProfileImg src="https://source.unsplash.com/random" alt="image" /> */}
                                     <ProfileImg id="img" src={user && user.photoURL ? user.photoURL : account.photoURL}
                                         srcSet={image} alt="image" />
                                     <div style={styles.overlay}><IconButton disabled={profile.touched} onClick={showProfiles} ><div >
@@ -391,14 +351,13 @@ export default function Profile() {
                                 {user && <> <Typography m={0.2} variant="subtitle1"> Name: {user.displayName} </Typography>
                                     <Typography m={0.2} variant="subtitle2"> E-Mail: {user.email} </Typography>
 
-                                    {userData && <> <Typography m={0.2} variant="subtitle2"> Phone: {userData.phone ||ErrLog }</Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Alt Mobile: {userData.altMobile ||ErrLog } </Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Pin Code: {userData.pincode ||ErrLog } </Typography>
-                                        <Typography m={0.2} variant="subtitle2"> Location: {userData.location ||ErrLog } </Typography> </>}
-                                    {/* {<Typography m={0.2} variant="subtitle2"> Join Date: {userData.joinDate || ErrLog } </Typography>} */}
-                                    <Tooltip title='This UserID is generated on account creation & rarely useful to User'>
-                                        <Typography m={0.2} variant="subtitle2"> UserID: {user.uid}</Typography>
-                                    </Tooltip> </>}
+                                    {userData && <>
+                                        <Typography m={0.2} variant="subtitle2"> Phone: {userData.phone || ErrLog}</Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Alt Mobile: {userData.altMobile || ErrLog} </Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Pin Code: {userData.pincode || ErrLog} </Typography>
+                                        <Typography m={0.2} variant="subtitle2"> Location: {userData.location || ErrLog} </Typography>
+                                    </>}
+                                </>}
                                 {/* <Iconify icon='ep:warning-filled' /> */}
                                 {updated ? <IconButton color="success" sx={{ float: 'right', mt: 1 }}>
                                     <Iconify icon='charm:circle-tick' />
