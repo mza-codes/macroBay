@@ -27,7 +27,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // import USERLIST from '../_mock/user';
 import { useEffect } from 'react';
 import { db } from 'src/Contexts/firebaseConfig';
-import { collection, doc, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { faker } from '@faker-js/faker';
 
 // ----------------------------------------------------------------------
@@ -51,13 +51,13 @@ function descendingComparator(a, b, orderBy) {
     return 1;
   }
   return 0;
-}
+};
 
 function getComparator(order, orderBy) {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
-}
+};
 
 function applySortFilter(array, comparator, query) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -70,7 +70,7 @@ function applySortFilter(array, comparator, query) {
     return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
-}
+};
 
 export default function UserPage() {
   const [page, setPage] = useState(0);

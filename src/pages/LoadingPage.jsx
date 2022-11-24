@@ -10,15 +10,18 @@ const LoadingPage = () => {
       </div>
       <h4>Please Wait while loading contents! </h4>
     </div>
-  )
-}
+  );
+};
 
 export default LoadingPage;
 
 export const BarLoader = () => (
-  <div className='lds-facebook'>
-    <div />
-    <div />
-    <div />
-  </div>
-);
+  <main className='centerLoader'>
+    <div className='lds-facebook'>
+      <div />
+      <div />
+      <div />
+    </div>
+    <h5>Loading..</h5>
+  </main>
+  );

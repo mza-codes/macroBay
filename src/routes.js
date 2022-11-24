@@ -55,7 +55,8 @@ export default function Router() {
       path: '/dashboard',
       element:
         <Suspense fallback={<BarLoader />}>
-          <DashboardLayout /> </Suspense>,
+          <DashboardLayout />
+        </Suspense>,
       children: [
         {
           path: 'app', element:
@@ -73,17 +74,20 @@ export default function Router() {
         {
           path: 'products', element:
             <Suspense fallback={<BarLoader />}>
-              <Products /> </Suspense>
+              <Products />
+            </Suspense>
         },
         {
           path: 'blog', element:
             <Suspense fallback={<BarLoader />}>
-              <Blog /> </Suspense>
+              <Blog />
+            </Suspense>
         },
         {
           path: 'viewproduct/:id', element:
             <Suspense fallback={<BarLoader />}>
-              <ProductView /> </Suspense>
+              <ProductView />
+            </Suspense>
         },
         {
           path: 'create', element:
@@ -121,12 +125,14 @@ export default function Router() {
     {
       path: 'imagesingle', element:
         <Suspense fallback={<BarLoader />}>
-          <ImgSingleView /> </Suspense>
+          <ImgSingleView />
+        </Suspense>
     },
     {
       path: 'images', element:
         <Suspense fallback={<BarLoader />}>
-          <ImageView /> </Suspense>
+          <ImageView />
+        </Suspense>
     },
     {
       path: 'login',
