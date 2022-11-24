@@ -3,9 +3,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Button, Typography, Container, Box } from '@mui/material';
 // components
-import Page from '../components/Page';
 import { signOut } from 'firebase/auth';
 import { auth } from 'src/Contexts/firebaseConfig';
+import Page from 'src/components/Page';
 
 // ----------------------------------------------------------------------
 

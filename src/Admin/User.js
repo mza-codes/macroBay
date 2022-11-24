@@ -72,7 +72,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export function UserPage() {
+export default function UserPage() {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -85,7 +85,7 @@ export function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [USERLIST,SETUSERLIST] = useState([])
+  const [USERLIST, SETUSERLIST] = useState([])
 
   //  Fetch Firestore Users
   const fetchUsers = async () => {
@@ -101,7 +101,7 @@ export function UserPage() {
         docId: doc.id
       }
     })
-    const dbusers = webusers.map((user, index) => (console.log(user), {
+    const dbusers = webusers.map((user, index) => ({
       id: user.id,
       avatarUrl: user.avatar,
       name: user.username,
@@ -114,7 +114,7 @@ export function UserPage() {
       isVerified: faker.datatype.boolean(),
       status: sample(['active', 'inactive']),
       role: sample(['Customer', 'Administrator', 'Employee', 'Manager'])
-    }))
+    }));
     SETUSERLIST(dbusers);
   };
 
@@ -202,7 +202,7 @@ export function UserPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, location, mobile, avatarUrl, pincode,email, docId } = row;
+                    const { id, name, location, mobile, avatarUrl, pincode, email, docId } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
@@ -230,7 +230,7 @@ export function UserPage() {
                         <TableCell align="left">{mobile}</TableCell>
                         <TableCell align="left">{email}</TableCell>
                         <TableCell align="left">{docId}</TableCell>
-                        
+
 
                         <TableCell align="right">
                           <UserMoreMenu />

@@ -11,8 +11,8 @@ import Page from "src/components/Page";
 import { db, storage } from "src/Contexts/firebaseConfig";
 import { User } from "src/Contexts/UserContext";
 import LogoOnlyLayout from "src/layouts/LogoOnlyLayout";
+import ErrorCustom from "src/pages/Errors/ErrorCustom";
 import EditProductForm from "./EditProductForm";
-import ErrorCustom from "./ErrorCustom";
 import MyPostsCard from "./MyPostsCard";
 
 
@@ -72,7 +72,7 @@ export default function MyPosts() {
             setMessage('User not found')
         }
 
-    }, [])
+    }, []);
 
     const modifyProduct = async (product) => {
         setEditProduct(null)
@@ -88,10 +88,7 @@ export default function MyPosts() {
             anchor.scrollIntoView({ behavior: 'smooth', block: 'center' })
             setLoading(false)
         }, 500);
-
-
-
-    }
+    };
 
     return (
         <Page title='My Products' >

@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Page from "src/components/Page";
 import LogoOnlyLayout from "src/layouts/LogoOnlyLayout";
-import ErrorCustom from "./ErrorCustom";
-import { ErrorLogo } from "./Page404";
+import ErrorCustom from "../Errors/ErrorCustom";
+import { ErrorLogo } from "../Errors/Page404";
 
 
 export default function ImgSingleView() {

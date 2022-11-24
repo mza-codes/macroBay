@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/Iconify";
 import Page from "src/components/Page";
-import LogoOnlyLayout from '../layouts/LogoOnlyLayout'
+import LogoOnlyLayout from "src/layouts/LogoOnlyLayout";
 
 const ProfileImg = styled('img')({
     top: 0,

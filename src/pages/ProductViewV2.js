@@ -7,7 +7,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/Contexts/firebaseConfig";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import ErrorCustom from "./ErrorCustom";
+import ErrorCustom from "./Errors/ErrorCustom";
 
 export default function ProductView() {
     const { saleItems } = useProductContext();
@@ -47,7 +47,7 @@ export default function ProductView() {
 
     useEffect(() => {
         fetchProduct();
-    }, []);
+    }, [fetchProduct]);
 
     return (
         <Page title={product?.name + 'Details'}>

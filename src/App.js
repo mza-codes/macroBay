@@ -10,9 +10,15 @@ import { useAuthContext } from './Contexts/UserContext';
 import { useProductContext } from './Contexts/ProductContext';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import _ from 'lodash';
-import lozad from 'lozad';
+
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => { return true; }
+  console.error = () => { return true; }
+  console.debug = () => { return true; }
+};
 
 export default function App() {
+
   const { setSaleItems } = useProductContext();
   const { setUserData, setUser } = useAuthContext();
 
@@ -33,7 +39,7 @@ export default function App() {
     } catch (e) {
       console.log("Error Fetching Products from Firestore", e);
       return false;
-    }
+    };
   };
 
   // fetchUserDoc for profile Updation
@@ -70,12 +76,6 @@ export default function App() {
 
     return () => { unsub(); };
   }, []);
-
-  useEffect(() => {
-    const el = document.querySelectorAll('.lozad'); //fix lazy load image
-    const observer = lozad(el); 
-    observer.observe();
-  })
 
   return (
     <ThemeProvider>
