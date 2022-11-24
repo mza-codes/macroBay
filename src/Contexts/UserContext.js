@@ -6,7 +6,9 @@ export const User = createContext(null)
 
 function UserContext({ children }) {
   const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({
+    docId: null
+  });
 
   return (
     <User.Provider value={{ user, setUser, userData, setUserData }} >
