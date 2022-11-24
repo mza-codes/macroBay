@@ -1,6 +1,7 @@
-import { Box, Button, Divider, Grid, IconButton, styled, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button,Grid, IconButton, styled, TextField, Tooltip, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import axios from "axios";
+import lozad from "lozad";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +16,6 @@ const ProfileImg = styled('img')({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    // position: 'absolute',
 });
 
 const styles = {
@@ -44,12 +44,9 @@ export default function ImageView() {
     const [imgWidth, setWidth] = useState('500')
     const [resultImg, setResultImg] = useState(null)
     const [imgCollection, setImgCollection] = useState([])
-    const [showCollection, setShowCollection] = useState(false)
+    const [showCollection, setShowCollection] = useState(false);
 
-
-    useEffect(() => {
-        getImg()
-    }, [])
+    const observer = lozad();
 
     const getImg = async () => {
         console.log('getimg called')
@@ -149,6 +146,14 @@ export default function ImageView() {
         route('/imagesingle')
     }
 
+    useEffect(() => {
+        getImg();
+    }, []);
+
+    useEffect(() => {
+        observer.observe();
+    });
+
     return (
         <div>
             <Page title='Image Collection'>
@@ -163,34 +168,34 @@ export default function ImageView() {
                             <Typography variant="h3" textAlign='center' >
                                 Image Collection
                             </Typography>
-                            <Box sx={{ textAlign: 'center' }}>
-                                {/* <Tooltip title='Get New images'>  */}
-                                <IconButton onClick={getImg} >
-                                    <Iconify icon='fluent:arrow-sync-circle-24-filled' width={24} height={24} />
-                                </IconButton>
-                                {/* </Tooltip> */}
-                            </Box>
+                            <Tooltip title='Get New images'>
+                                <Box sx={{ textAlign: 'center' }}>
+                                    <IconButton onClick={getImg} >
+                                        <Iconify icon='fluent:arrow-sync-circle-24-filled' width={24} height={24} />
+                                    </IconButton>
+                                </Box>
+                            </Tooltip>
                         </Grid>
                         <Grid container
                             direction="column"
                             justifyContent="center"
                             alignItems="center" item xs={12} md={4} >
                             <div style={styles.card}>
-                                <ProfileImg id="img" src={image} alt="image" />
+                                <ProfileImg className="lozad" id="img" data-src={image} alt="image" />
                             </div>
                         </Grid>
                         <Grid container direction="column"
                             justifyContent="flex-start"
                             alignItems="flex-start" item xs={12} sx={{ alignItems: { xs: 'center', md: 'center' } }} md={4} >
                             <div>
-                                {image2 && <ProfileImg id="img" src={image2} alt="Previous Image" />}
+                                {image2 && <ProfileImg className="lozad" id="img" data-src={image2} alt="Previous Image" />}
                             </div>
                         </Grid>
                         <Grid container direction="column"
                             justifyContent="flex-start"
                             alignItems="flex-start" item xs={12} sx={{ alignItems: { xs: 'center', md: 'center' } }} md={4} >
                             <div style={styles.card}>
-                                {image3 && <ProfileImg id="img" src={image3} alt="Previous Image" />}
+                                {image3 && <ProfileImg className="lozad" id="img" data-src={image3} alt="Previous Image" />}
                             </div>
                         </Grid>
                         <Grid container item xs={12} direction='column' justifyContent="center"
@@ -233,7 +238,7 @@ export default function ImageView() {
                                 <Typography mb={0.5} variant="overline"> Result </Typography>
                                 <div style={styles.card} >
                                     {/* <img src='myimage.png' border={0} /> */}
-                                    <ProfileImg src={pic} alt="Search Result" />
+                                    <ProfileImg className="lozad" data-src={pic} alt="Search Result" />
                                     {/* <a href={pic} download > Download Image </a> */}
                                 </div>
                             </Grid>
@@ -249,7 +254,7 @@ export default function ImageView() {
                                 <Grid container key={item.id} direction="column" justifyContent="center"
                                     alignItems="center" item xs={12} md={6} lg={4} onClick={() => { viewImage(item) }} >
                                     {/* <Box key={item.id} sx={{ position: 'relative' }}> */}
-                                    <ProfileImg srcSet={item.download_url} alt={item.author} />
+                                    <ProfileImg className="lozad" data-src={item.download_url} alt={item.author} />
                                     {/* </Box> */}
                                     <Typography m={0.5} variant="overline">{item.author}</Typography>
                                 </Grid>

@@ -1,20 +1,16 @@
 import * as Yup from 'yup';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore"
-import Compressor from 'compressorjs'
-// form
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
+import { doc,  updateDoc } from "firebase/firestore"
+import Compressor from 'compressorjs';
 // @mui
-import { Button, Alert, InputAdornment, Tooltip, IconButton } from '@mui/material';
+import { Button, Alert, Tooltip, IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../components/Iconify';
 import { db, storage } from 'src/Contexts/firebaseConfig';
 import { useContext } from 'react';
-import { ImgView } from './CreatePost';
-import { Form, Formik, useField } from 'formik';
+import { Form, Formik } from 'formik';
 import CustomInput, { CustomSelect } from 'src/components/hook-form/CustomInput';
 import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from 'firebase/storage';
 import { User } from 'src/Contexts/UserContext';

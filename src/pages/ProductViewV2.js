@@ -3,7 +3,7 @@ import { useProductContext } from "src/Contexts/ProductContext";
 import { Grid, Container, Typography, Box, Avatar } from '@mui/material';
 import Page from '../components/Page';
 import { User } from "src/Contexts/UserContext";
-import { collection,getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/Contexts/firebaseConfig";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -33,19 +33,16 @@ export default function ProductView() {
         };
     };
 
-    async function getSeller(userId) {
-        const q = query(collection(db, 'webusers'), where('id', '==', userId))
-        try {
-            getDocs(q).then((result) => {
-                result.forEach((doc) => {
-                    console.log(doc.data());
-                    setSeller(doc.data())
-                });
+    async function getSeller(sellerId) {
+        const q = query(collection(db, 'webusers'), where('id', '==', sellerId));
+        getDocs(q).then((result) => {
+            result.forEach((doc) => {
+                setSeller(doc.data())
             });
-        } catch (error) {
-            console.log(error.message);
-            console.log("Error Fetching Seller from Firestore",error);
-        };
+        }).catch((err) => {
+            console.log(err.message);
+            console.log("Error Fetching Seller from Firestore", err);
+        });
     };
 
     useEffect(() => {

@@ -1,10 +1,9 @@
-import {initializeApp} from 'firebase/app'
-import { FIREBASE_KEY } from 'src/Constants'
+import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 const config = {
-    apiKey: FIREBASE_KEY,
+    apiKey: process.env.REACT_APP_FIREBASE_KEY,
     authDomain: "microbay-mza.firebaseapp.com",
     projectId: "microbay-mza",
     storageBucket: "microbay-mza.appspot.com",
@@ -15,10 +14,10 @@ const config = {
 
 export default initializeApp(config)
 
-export const app = initializeApp(config) ;
+export const app = initializeApp(config);
 
-export const storage = getStorage(app) ;
+export const storage = getStorage(app);
 
-export const auth = getAuth(app) ;
+export const auth = getAuth(app);
 
-export const db = getFirestore(app) ;
+export const db = getFirestore(app);
