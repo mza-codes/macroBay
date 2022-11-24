@@ -61,7 +61,8 @@ export default function Router() {
         {
           path: 'app', element:
             <Suspense fallback={<BarLoader />}>
-              <DashboardApp /> </Suspense>
+              <DashboardApp />
+            </Suspense>
         },
         {                               //navigates to all users info table
           path: 'user', element:
@@ -170,13 +171,17 @@ export default function Router() {
             </Suspense>
         },
         {
-          path: '*', element: <Navigate to="/404" />
+          path: '*', element: <Suspense fallback={<BarLoader />}>
+            <NotFound />
+          </Suspense>
         },
       ],
     },
     {
       path: '*',
-      element: <Navigate to="/404" replace />,
+      element: <Suspense fallback={<BarLoader />}>
+        <NotFound />
+      </Suspense>,
     },
   ]);
 }

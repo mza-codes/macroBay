@@ -1,4 +1,5 @@
 // ----------------------------------------------------------------------
+// package-json "homepage" +" /path to file"
 let v = Math.floor((Math.random() * 24) + 1)
 console.log(v);
 const account = {

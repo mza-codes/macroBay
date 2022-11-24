@@ -3,7 +3,7 @@ import '../App.css';
 const LoadingPage = () => {
   return (
     <div className='loadingPage'>
-      <div class="lds-facebook">
+      <div class="macro-loader">
         <div />
         <div />
         <div />
@@ -17,7 +17,7 @@ export default LoadingPage;
 
 export const BarLoader = () => (
   <main className='centerLoader'>
-    <div className='lds-facebook'>
+    <div className='macro-loader'>
       <div />
       <div />
       <div />
