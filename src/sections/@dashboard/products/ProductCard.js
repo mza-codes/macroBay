@@ -8,13 +8,14 @@ import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/Label';
 import { ColorPreview } from '../../../components/color-utils';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { User } from 'src/Contexts/UserContext';
 import Iconify from 'src/components/Iconify';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db, storage } from 'src/Contexts/firebaseConfig';
 import { deleteObject, getMetadata, ref } from 'firebase/storage';
 import { ProductsRefresh } from 'src/pages/Products';
+import lozad from 'lozad';
 
 const ProductImgStyle = styled('img')({
   top: 0,
@@ -30,6 +31,7 @@ ShopProductCard.propTypes = {
 
 export default function ShopProductCard({ product }) {
   // const { name, cover, price, colors, status, priceSale } = product;
+  const observer = lozad();
   const { user } = useContext(User)
   const { setReload, setAlert } = useContext(ProductsRefresh)
   let admin = false
@@ -73,6 +75,10 @@ export default function ShopProductCard({ product }) {
     };
   };
 
+  useEffect(() => {
+    observer.observe();
+  });
+
   return (
     <Card className='pointer' >
       <Box sx={{ pt: '100%', position: 'relative' }} onClick={() => route(`/dashboard/viewproduct/${id}`)}>
@@ -91,7 +97,7 @@ export default function ShopProductCard({ product }) {
             {status}
           </Label>
         )}
-        <ProductImgStyle alt={name} src={url} />
+        <ProductImgStyle alt={name} data-src={url} className="lozad" />
       </Box>
 
       <Stack spacing={1} sx={{ p: 3 }}>

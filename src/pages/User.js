@@ -1,5 +1,4 @@
 import { filter, sample } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -20,7 +19,6 @@ import {
 } from '@mui/material';
 // components
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
@@ -117,8 +115,8 @@ export function UserPage() {
       status: sample(['active', 'inactive']),
       role: sample(['Customer', 'Administrator', 'Employee', 'Manager'])
     }))
-    SETUSERLIST(dbusers)
-  }
+    SETUSERLIST(dbusers);
+  };
 
   useEffect(() => {
     fetchUsers()

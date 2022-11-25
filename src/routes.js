@@ -12,16 +12,14 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import UserError from './pages/UserError';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { User } from './Contexts/UserContext';
-import { SingleProduct } from './Contexts/ProductContext';
 import ProductView from './pages/ProductViewV2';
 import CreatePost from './pages/CreatePost';
 import Result from './pages/ResultV2';
 import Profile from './pages/Profile';
 import ImageView from './pages/ImageView';
 import ImgSingleView from './pages/ImgSingleView';
-import EditProfile from './pages/ProfileEdit';
 import MyPosts from './pages/MyPosts';
 
 // ----------------------------------------------------------------------
