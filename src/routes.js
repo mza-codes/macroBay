@@ -17,7 +17,7 @@ const DashboardApp = lazy(() => import('./pages/DashboardApp'));
 const ProductView = lazy(() => import('./pages/ProductViewV2'));
 const CreatePost = lazy(() => import('./pages/CreatePost'));
 const Result = lazy(() => import('./pages/Result/ResultV2'));
-const Profile = lazy(() => import('./pages/Profile/Profile'));
+const Profile = lazy(() => import('./pages/Profile/ProfileV2'));
 const ImgSingleView = lazy(() => import('./pages/ImageViewer/ImgSingleView'));
 const ImageView = lazy(() => import('./pages/ImageViewer/ImageView'));
 const UserError = lazy(() => import('./pages/Errors/UserError'));

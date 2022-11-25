@@ -16,18 +16,14 @@ import { updateProfile } from 'firebase/auth';
 import { useContext } from 'react';
 import { useAuthContext, User } from 'src/Contexts/UserContext';
 
-export default function EditProfile({ value }) {
+export default function EditProfile({ actions }) {
+  console.log("editProfileactrions", actions);
   const [complete, setComplete] = useState(false);
-  const {setUserData} = useAuthContext();
-  const { user } = useContext(User)
-  console.log(value);
-  let open = value[0]
-  let setOpen = value[1]
-  let docId = value[3]
-  let setUpdated = value[5]
-  console.log(value[2]);
-
-  let { username, email, phone, pincode, location, altMobile } = value[2]
+  const { setUserData } = useAuthContext();
+  const { user } = useContext(User);
+  const { popup: open, setPopup: setOpen, userData, updated, setUpdated } = actions;
+  const { docId } = userData;
+  let { username, email, phone, pincode, location, altMobile } = userData;
   if (pincode === undefined || null) { pincode = '' }
   if (location === undefined || null) { location = '' }
   if (altMobile === undefined || null) { altMobile = '' }
@@ -66,7 +62,7 @@ export default function EditProfile({ value }) {
       altMobile
     };
     await updateDoc(docRef, updateData)
-      .then(async(response) => {
+      .then(async (response) => {
         console.log(response);
         setUserData((current) => ({ ...current, ...updateData }));
         await updateProfile(user, { displayName: username });
@@ -75,7 +71,7 @@ export default function EditProfile({ value }) {
         setTimeout(() => {
           setOpen(false)
         }, 2500);
-      }).catch((err) => { console.log("Error Updating UserData",err) })
+      }).catch((err) => { console.log("Error Updating UserData", err) })
   };
 
   return (

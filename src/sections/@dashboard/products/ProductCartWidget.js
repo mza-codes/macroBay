@@ -3,11 +3,8 @@ import { styled } from '@mui/material/styles';
 import { Badge } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
-import { ProductsRefresh } from 'src/pages/Products';
-import { useContext } from 'react';
 
 // ----------------------------------------------------------------------
-// const pos = 26
 const RootStyle = styled('div')(({ theme }) => ({
   zIndex: 999,
   left: 0,
@@ -52,7 +49,6 @@ const RefreshButton = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function CartWidget() {
-  const {setReload} = useContext(ProductsRefresh)
   return (
     <div>
       {/* <RootStyle>
@@ -60,7 +56,7 @@ export default function CartWidget() {
           <Iconify icon="eva:shopping-cart-fill" width={24} height={24} />
         </Badge>
       </RootStyle> */}
-      <RefreshButton onClick={() => { sessionStorage.removeItem("localProducts"); setReload(true) }}>
+      <RefreshButton onClick={() => {}}>
         <Badge color="warning">
           <Iconify icon="fontisto:cloud-refresh" width={25} height={25} />
         </Badge>
