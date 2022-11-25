@@ -7,8 +7,8 @@ const config = {
     authDomain: "microbay-mza.firebaseapp.com",
     projectId: "microbay-mza",
     storageBucket: "microbay-mza.appspot.com",
-    messagingSenderId: "4720857436",
-    appId: "1:4720857436:web:4291db00207a930cebb199",
+    messagingSenderId: process.env.REACT_APP_FIREBASE_messagingSenderId,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
     measurementId: "G-NR82KGQLFV"
 }
 

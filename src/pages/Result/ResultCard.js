@@ -1,14 +1,8 @@
 import PropTypes from 'prop-types';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // material
-import { Box, Card, Link, Typography, Stack, Button, Alert } from '@mui/material';
+import { Box, Card,Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useContext } from 'react';
-import { User } from 'src/Contexts/UserContext';
-import { SingleProduct } from 'src/Contexts/ProductContext';
-import Label from 'src/components/Label';
-import Iconify from 'src/components/Iconify';
-
 
 // ----------------------------------------------------------------------
 
@@ -27,15 +21,6 @@ ResultCard.propTypes = {
 };
 
 export default function ResultCard({ product }) {
-  const { user } = useContext(User)
-  let admin = false
-  if (user) {
-    if (user.email.includes("macrobay")) {
-      admin = true
-    } else {
-      admin = false
-    }
-  }
   const { name, category, postDate, price, url, id } = product
   const route = useNavigate()
   function renderProduct() {

@@ -147,22 +147,22 @@ export default function Profile() {
     };
 
     const storeData = async (key) => {
-        const docRef = doc(db, 'webusers', docId)
+        const docRef = doc(db, 'webusers', userData?.docId);
         const value = {
             avatar: user.photoURL,
             profileKey: key,
-            docId
-        }
+            docId: userData?.docId,
+        };
         await updateDoc(docRef, value)
             .then((response) => {
                 console.log(response);
                 setUserData((curr) => ({ ...curr, ...value }));
             })
             .catch((err) => { console.log(err); })
-        setComplete(true)
+        setComplete(true);
         setTimeout(() => {
             setComplete(false)
-            navigate('/')
+            navigate('/');
         }, 2500);
     };
 
@@ -186,12 +186,12 @@ export default function Profile() {
         console.log(image);
         if (image.includes('http://')) {
             console.log('Blob found in image use Submit Button');
-            setLoading2(false)
-            setUploadErr(true)
-            setTick(false)
-            return false
-        }
-        if (user.photoURL && user.photoURL.includes('firebasestorage', 'microbay')) { // use profileKey validation
+            setLoading2(false);
+            setUploadErr(true);
+            setTick(false);
+            return false;
+        };
+        if (user?.photoURL?.includes('firebasestorage', 'microbay')) { // use profileKey validation
             console.log('includes');
             console.log('userData logg', userData)
             const delRef = ref(storage, user.photoURL)
@@ -199,19 +199,14 @@ export default function Profile() {
             console.log(metadata);
             console.log(metadata.fullPath);
             await deleteObject(ref(storage, metadata.fullPath))
-        }
+        };
         setUploadErr(false);
-
-        await updateProfile(user, { photoURL: image })
-        console.log(user)
+        await updateProfile(user, { photoURL: image });
         let key = 'localAvatar'
         storeData(key)
         setLoading2(false)
-        // setTimeout(() => {
-        //     setComplete(false)
-        //     navigate('/')
-        // }, 2000);
-    }
+
+    };
 
     const FILE_SIZE = 5001200;
     const SUPPORTED_FORMATS = [
@@ -273,20 +268,19 @@ export default function Profile() {
     }, []);
 
     const setUploadedImage = async (values) => {
+        console.log("setting uploaded image");
         setLoading2(true)
         setUploadErr(false)
-        const { image } = values
+        const { image } = values;
         if (user.photoURL && user.photoURL.includes('firebasestorage', 'microbay')) { // use profileKey validation
-            console.log('includes');
+            console.log('uploaded photo includes');
             const delRef = ref(storage, user.photoURL)
             let metadata = await getMetadata(delRef)
             console.log(metadata);
-            console.log(metadata.fullPath);
             await deleteObject(ref(storage, metadata.fullPath))
-        }
+        };
         let compressed = await compress(image)
-        console.log('Updating Profile')
-
+        console.log('Updating Profile');
         let dt = new Date().toISOString().toString().split(':', 6)
         let i = dt.length - 1
         let key = dt[i]
@@ -321,7 +315,8 @@ export default function Profile() {
                                 alignItems="center" >
                                 {complete &&
                                     <Alert sx={{ mx: 5, mb: 1 }} variant="filled" severity="success" >Profile Update Completed
-                                        <strong> Successfully ! </strong></Alert>}
+                                        <strong> Successfully ! </strong>
+                                    </Alert>}
                                 {loading2 && <div className="loaderSmall" />}
                                 {uploadErr && <Typography variant="overline" color='error' > Please Use the Preferred Confim Button
                                     for Update by File Upload </Typography>}
@@ -336,13 +331,16 @@ export default function Profile() {
                                 <div style={styles.card}>
                                     <ProfileImg id="img" src={user && user.photoURL ? user.photoURL : account.photoURL}
                                         srcSet={image} alt="image" />
-                                    <div style={styles.overlay}><IconButton disabled={profile.touched} onClick={showProfiles} ><div >
-                                        <Iconify icon='flat-color-icons:edit-image' width={25} height={25} /></div>
-                                    </IconButton></div>
+                                    <div style={styles.overlay}>
+                                        <IconButton disabled={profile.touched} onClick={showProfiles} >
+                                            <div>
+                                                <Iconify icon='flat-color-icons:edit-image' width={25} height={25} />
+                                            </div>
+                                        </IconButton>
+                                    </div>
                                     {tick && <IconButton onClick={confirmUpdate} color="success" disabled={disabled}
                                         sx={{ float: 'right', mt: 1 }}>
                                         <Iconify icon='charm:circle-tick' /> </IconButton>}
-
                                 </div>
                             </Grid>
 
@@ -370,7 +368,8 @@ export default function Profile() {
                                 <Button onClick={() => { setShow(!show) }} disabled={disabled} >Get Random Image</Button>
                             </Grid>
                             {/* PopUP Start */}
-                            {popup && <EditProfile value={[popup, setPopup, userData, docId, updated, setUpdated]} />}
+                            {popup &&
+                                <EditProfile actions={{ popup, setPopup, userData, docId, updated, setUpdated }} />}
                             {/* Close PopUP */}
                             <Grid item xs={12} container gap={3} direction='row' justifyContent='center'
                                 alignContent='center' textAlign='center' alignItems='center'  >
@@ -479,4 +478,4 @@ export default function Profile() {
             </Page>
         </div >
     )
-}
+};

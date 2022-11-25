@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Box, Card, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useContext } from 'react';
-import { User } from 'src/Contexts/UserContext';
-import { SingleProduct } from 'src/Contexts/ProductContext';
 
 const ProductImgStyle = styled('img')({
     top: 0,
@@ -19,18 +15,7 @@ MyPostsCard.propTypes = {
 };
 
 export default function MyPostsCard({ product }) {
-    const { user } = useContext(User)
-    let admin = false
-    if (user) {
-        if (user.email.includes("macrobay")) {
-            admin = true
-        } else {
-            admin = false
-        }
-    }
-    const { name, category, postDate, price, url, id } = product
-    const route = useNavigate();
-
+    const { name, category, postDate, price, url, id } = product;
     const renderProduct = () => {
         console.log("nothing to do ");
     };

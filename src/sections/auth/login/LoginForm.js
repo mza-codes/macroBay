@@ -1,9 +1,6 @@
 import * as Yup from 'yup';
-import { FirebaseContext } from 'src/Contexts/FirebaseContext';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-// import { FirebaseContext } from 'src/Contexts/FirebaseContext';
-// import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,8 +12,6 @@ import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
 import { auth } from 'src/Contexts/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
-
-
 
 // ----------------------------------------------------------------------
 
@@ -41,16 +36,13 @@ export default function LoginForm() {
         defaultValues,
     });
 
-    const {
-        handleSubmit,
-        formState: { isSubmitting },
-    } = methods;
+    const { handleSubmit } = methods;
 
     const onSubmit = async (props) => {
         setLoading(true)
         signInWithEmailAndPassword(auth, props.email, props.password).then((result) => {
             console.log(result)
-            navigate('/')
+            navigate('/');
         }).catch((err) => { setErrorMsg(err.code);setLoading(false) })
 
     };

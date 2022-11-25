@@ -4,12 +4,12 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Box, Card, Link, Typography, Stack, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // utils
-import { fCurrency } from '../../../utils/formatNumber';
+// import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/Label';
-import { ColorPreview } from '../../../components/color-utils';
+// import { ColorPreview } from '../../../components/color-utils';
 import { useContext, useEffect } from 'react';
-import { User } from 'src/Contexts/UserContext';
+import { useAuthContext } from 'src/Contexts/UserContext';
 import Iconify from 'src/components/Iconify';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db, storage } from 'src/Contexts/firebaseConfig';
@@ -32,8 +32,8 @@ ShopProductCard.propTypes = {
 export default function ShopProductCard({ product }) {
   // const { name, cover, price, colors, status, priceSale } = product;
   const observer = lozad();
-  const { user } = useContext(User)
-  const { setReload, setAlert } = useContext(ProductsRefresh)
+  const { user } = useAuthContext();
+  const { setAlert } = useContext(ProductsRefresh)
   let admin = false
   if (user) {
     let domain = user.email.split('@');
@@ -61,7 +61,6 @@ export default function ShopProductCard({ product }) {
       setTimeout(() => {
         setAlert(false);
       }, 5000);
-      setReload(true);
     } catch (err) {
       console.log('ERROR OCCURED Deleting Doc from Firestore', err);
     };

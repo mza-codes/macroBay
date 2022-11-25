@@ -27,7 +27,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // import USERLIST from '../_mock/user';
 import { useEffect } from 'react';
 import { db } from 'src/Contexts/firebaseConfig';
-import { collection, doc, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { faker } from '@faker-js/faker';
 
 // ----------------------------------------------------------------------
@@ -51,13 +51,13 @@ function descendingComparator(a, b, orderBy) {
     return 1;
   }
   return 0;
-}
+};
 
 function getComparator(order, orderBy) {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
-}
+};
 
 function applySortFilter(array, comparator, query) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -70,9 +70,9 @@ function applySortFilter(array, comparator, query) {
     return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
-}
+};
 
-export function UserPage() {
+export default function UserPage() {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -85,7 +85,7 @@ export function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [USERLIST,SETUSERLIST] = useState([])
+  const [USERLIST, SETUSERLIST] = useState([])
 
   //  Fetch Firestore Users
   const fetchUsers = async () => {
@@ -101,7 +101,7 @@ export function UserPage() {
         docId: doc.id
       }
     })
-    const dbusers = webusers.map((user, index) => (console.log(user), {
+    const dbusers = webusers.map((user, index) => ({
       id: user.id,
       avatarUrl: user.avatar,
       name: user.username,
@@ -114,7 +114,7 @@ export function UserPage() {
       isVerified: faker.datatype.boolean(),
       status: sample(['active', 'inactive']),
       role: sample(['Customer', 'Administrator', 'Employee', 'Manager'])
-    }))
+    }));
     SETUSERLIST(dbusers);
   };
 
@@ -202,7 +202,7 @@ export function UserPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, location, mobile, avatarUrl, pincode,email, docId } = row;
+                    const { id, name, location, mobile, avatarUrl, pincode, email, docId } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
@@ -230,7 +230,7 @@ export function UserPage() {
                         <TableCell align="left">{mobile}</TableCell>
                         <TableCell align="left">{email}</TableCell>
                         <TableCell align="left">{docId}</TableCell>
-                        
+
 
                         <TableCell align="right">
                           <UserMoreMenu />

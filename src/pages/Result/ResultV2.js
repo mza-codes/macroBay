@@ -6,8 +6,8 @@ import { useState } from "react";
 import { useLocation} from "react-router-dom";
 import Page from "src/components/Page";
 import { useProductContext } from "src/Contexts/ProductContext";
-import ErrorCustom from "./ErrorCustom";
-import { ErrorLogo } from "./Page404";
+import ErrorCustom from "../Errors/ErrorCustom";
+import { ErrorLogo } from "../Errors/Page404";
 import ResultCard from "./ResultCard";
 import ResultSort from "./ResultSort";
 
