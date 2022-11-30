@@ -1,7 +1,7 @@
 // // scroll bar
 import 'simplebar/src/simplebar.css';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import UserContext from './Contexts/UserContext';
@@ -13,9 +13,9 @@ root.render(
   <ProductContext>
     <UserContext>
       <HelmetProvider>
-        <BrowserRouter>
+        <HashRouter hashType="hashbang">
           <App />
-        </BrowserRouter>
+        </HashRouter >
       </HelmetProvider>
     </UserContext>
   </ProductContext>
