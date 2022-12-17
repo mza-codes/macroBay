@@ -74,7 +74,7 @@ export default function App() {
       console.log(user);
     });
 
-    return () => { unsub(); };
+    return () => unsub();
   }, []);
 
   return (
