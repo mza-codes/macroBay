@@ -1,4 +1,4 @@
-import { Box, Button,Grid, IconButton, styled, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Grid, IconButton, styled, TextField, Tooltip, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import axios from "axios";
 import lozad from "lozad";
@@ -21,7 +21,6 @@ const ProfileImg = styled('img')({
 const styles = {
     card: {
         position: 'relative',
-
     },
     overlay: {
         position: 'absolute',
@@ -51,19 +50,19 @@ export default function ImageView() {
     const getImg = async () => {
         console.log('getimg called')
         const data = 'https://source.unsplash.com/random'
-        image ? setImage2(image) : setImage2(data)
-        image2 && setImage3(image2)
+        image ? setImage2(image) : setImage2(data);
+        image2 && setImage3(image2);
 
         axios.get(data).then((response) => {
-            console.log(response.request.responseURL);
-            const url = response.request.responseURL
-            setImage(url)
-
+            const url = response.request.responseURL;
+            setImage(url);
+            return;
         }).catch((err) => {
             console.log(err)
-            setErr('Axios Get Error', err)
-        })
-    }
+            setErr('Axios Get Error', err);
+            return;
+        });
+    };
 
     const handleImg = async () => {
         setLoading(true)
@@ -120,31 +119,37 @@ export default function ImageView() {
                 setFetchErr(true)
                 setLoading(false)
             });
-            // };
 
         } else {
             console.log('falseState');
             setLoading(false)
             setErr('Width And Height must be within 150-5000 Range !')
-        }
-
-    }
+        };
+    };
 
     const renderImg = () => {
+        const localImgs = localStorage.getItem('picusm-list');
+        if (localImgs) {
+            setImgCollection(JSON.parse(localImgs));
+            setShowCollection(true);
+            return
+        };
+
         console.log('renderImg Called');
         let dataUrl = 'https://picsum.photos/v2/list?page=2&limit=100'
         axios.get(dataUrl).then((res) => {
             console.log('data fetched', res);
-            setImgCollection(res.data)
+            setImgCollection(res.data);
+            localStorage.setItem('picusm-list', JSON.stringify(res.data));
             setShowCollection(true)
-        })
-    }
+        });
+    };
 
     const viewImage = (picture) => {
         console.log(picture);
         sessionStorage.setItem('imageSingle', JSON.stringify(picture))
         route('/imagesingle')
-    }
+    };
 
     useEffect(() => {
         getImg();
@@ -260,15 +265,8 @@ export default function ImageView() {
                                 </Grid>
                             )
                         })}
-
-                        {/* <Box sx={{ pt: '100%', position: 'relative' }}  */}
-
-
-                        {/* <Grid item xs={4} md={6} >
-                                <Button fullWidth color="warning" variant="contained" >Click Me</Button>
-                            </Grid> */}
+                        
                     </Grid>
-                    {/* </div> */}
                 </Container>
             </Page>
         </div >
