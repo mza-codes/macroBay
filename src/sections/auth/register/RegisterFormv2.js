@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { Box, Container } from '@mui/system';
-import { Alert, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Alert, Grid, Stack, Typography } from '@mui/material';
 import * as Yup from 'yup'
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from 'src/Contexts/firebaseConfig';
@@ -28,9 +27,6 @@ export default function RegisterForm() {
     altMobile: Yup.string().min(9, 'Mobile Number not valid').max(15, 'Invalid Mobile Number')
   })
 
-  // useEffect(() => {
-  //   console.log('useEff cld hr');
-  // }, [])
   const handleUpdate = async (values, actions) => {
     console.log('Updating User Data')
     console.log(values);
@@ -54,7 +50,8 @@ export default function RegisterForm() {
     setTimeout(() => {
       // setOpen(false)
     }, 2500);
-  }
+  };
+
   return (
     <div>
       <Grid container item xs={12} direction='column' justifyContent='center' textAlign='center'
@@ -64,15 +61,15 @@ export default function RegisterForm() {
         </Grid>
 
         <Formik initialValues={{
-          username: '', email: '', pincode: '', phone: '', location: '', altMobile: '' }}
+          username: '', email: '', pincode: '', phone: '', location: '', altMobile: ''
+        }}
           validationSchema={registerSchema} onSubmit={handleUpdate} >
           {props => (
             <Form spellCheck >
-              {/* {console.log(props)} */}
               <Grid container item direction='row' textAlign='center' justifyContent='center' gap={2} >
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <CustomInput label='User Name' name='username' type='text' variant={variant} id="outlined-username" />
-                <CustomInput label='E Mail' name='email' type='email' variant={variant} id="outlined-email" />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <CustomInput label='User Name' name='username' type='text' variant={variant} id="outlined-username" />
+                  <CustomInput label='E Mail' name='email' type='email' variant={variant} id="outlined-email" />
                 </Stack>
                 <CustomInput label='Mobile' name='phone' type='number' variant={variant} id="outlined-phone" />
                 <CustomInput label='PIN Code' name='pincode' type='text' fullWidth variant={variant} id="outlined-pincode" />
@@ -87,8 +84,6 @@ export default function RegisterForm() {
             </Form>
           )}
         </Formik>
-
-        {/* Close FORM Content  */}
       </Grid>
     </div>
   );

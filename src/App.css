@@ -99,8 +99,8 @@
 
 .errorInput {
     color: red !important;
-    font-size: x-small;
-    font-weight: 900;
+    font-size: 0.7rem;
+    font-weight: 600;
 }
 
 .successInput {

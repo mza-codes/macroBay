@@ -19,10 +19,10 @@ export default function LoginForm() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMsg] = useState('')
-    const [loading,setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
     const LoginSchema = Yup.object().shape({
         email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-        password: Yup.string().required('Password is required'),
+        password: Yup.string().required('Password is required').min(4).max(20),
     });
 
     const defaultValues = {
@@ -43,7 +43,7 @@ export default function LoginForm() {
         signInWithEmailAndPassword(auth, props.email, props.password).then((result) => {
             console.log(result)
             navigate('/');
-        }).catch((err) => { setErrorMsg(err.code);setLoading(false) })
+        }).catch((err) => { setErrorMsg(err.code); setLoading(false) })
 
     };
     return (
