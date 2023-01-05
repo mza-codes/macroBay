@@ -16,6 +16,7 @@ import { db, storage } from 'src/Contexts/firebaseConfig';
 import { deleteObject, getMetadata, ref } from 'firebase/storage';
 import { ProductsRefresh } from 'src/pages/Products';
 import lozad from 'lozad';
+import { imgLoader } from 'src/assets';
 
 const ProductImgStyle = styled('img')({
   top: 0,
@@ -96,7 +97,7 @@ export default function ShopProductCard({ product }) {
             {status}
           </Label>
         )}
-        <ProductImgStyle alt={name} data-src={url} className="lozad" />
+        <ProductImgStyle alt={name} src={imgLoader} data-src={url} className="lozad" />
       </Box>
 
       <Stack spacing={1} sx={{ p: 3 }}>
